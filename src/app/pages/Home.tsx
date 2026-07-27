@@ -1,13 +1,11 @@
 import { motion } from 'motion/react';
 import { ArrowRight, Check, Quote, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
-import { useIsMobile } from '../hooks/useWindowSize';
+import { fadeUp } from '../lib/animations';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-};
+// ═══════════════════════════════════════════════════════════════════════════
+//  COPYWRITING lives in these arrays. Edit text inside the quotes; keep names.
+// ═══════════════════════════════════════════════════════════════════════════
 
 const credentials = [
   '12+ Years Manufacturing Excellence',
@@ -85,134 +83,45 @@ const featuredProjects = [
   },
 ];
 
+// Reused warm "eyebrow" label above section titles.
+const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-4';
+
 export default function Home() {
-  const isMobile = useIsMobile();
-
   return (
-    <div style={{ paddingTop: 80 }}>
+    <div className="pt-20">
 
-      {/* ── Hero ── */}
-      <section style={{ position: 'relative', height: isMobile ? '70vh' : '100vh', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0 }}>
+      {/* ── Hero (full-image) ── */}
+      <section className="relative h-[70vh] md:h-screen overflow-hidden">
+        <div className="absolute inset-0">
           <img
             src="/images/Hero-Picture.jpg"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            className="w-full h-full object-cover"
           />
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(135deg, rgba(34,31,28,0.7) 0%, rgba(139,121,105,0.4) 100%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'relative',
-            height: '100%',
-            maxWidth: 1440,
-            margin: '0 auto',
-            padding: isMobile ? '0 24px' : '0 48px',
-            display: 'flex',
-            alignItems: 'center',
-            color: '#fff',
-          }}
-        >
-          <motion.div {...fadeUp} style={{ maxWidth: isMobile ? '100%' : 800 }}>
-            <div
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 11 : 13,
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                marginBottom: isMobile ? 16 : 24,
-                opacity: 0.9,
-              }}
-            >
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,31,28,0.7)_0%,rgba(139,121,105,0.4)_100%)]" />
+        <div className="relative h-full max-w-[1440px] mx-auto px-6 md:px-12 flex items-center text-white">
+          <motion.div {...fadeUp} className="max-w-full md:max-w-[800px]">
+            <div className="font-sans text-[11px] md:text-[13px] font-semibold tracking-[0.15em] uppercase mb-4 md:mb-6 opacity-90">
               Premium Rattan Manufacturer
             </div>
-            <h1
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '36px' : 'clamp(48px, 6vw, 84px)',
-                fontWeight: 600,
-                lineHeight: 1.1,
-                marginBottom: isMobile ? 16 : 24,
-                letterSpacing: '-0.02em',
-              }}
-            >
+            <h1 className="font-serif text-[36px] md:text-[clamp(48px,6vw,84px)] font-semibold leading-[1.1] mb-4 md:mb-6 tracking-[-0.02em]">
               Crafting Excellence in Natural & Synthetic Rattan
             </h1>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? '16px' : 'clamp(18px, 2vw, 22px)',
-                lineHeight: 1.6,
-                marginBottom: isMobile ? 32 : 48,
-                opacity: 0.95,
-                maxWidth: 640,
-              }}
-            >
+            <p className="font-sans text-[16px] md:text-[clamp(18px,2vw,22px)] leading-[1.6] mb-8 md:mb-12 opacity-95 max-w-[640px]">
               Trusted by global brands, interior designers, and commercial developers for 12+ years of uncompromising quality and craftsmanship.
             </p>
-            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flexWrap: 'wrap', gap: isMobile ? 12 : 16 }}>
+            <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4">
               <Link
                 to="/collections"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 12,
-                  padding: isMobile ? '14px 28px' : '18px 40px',
-                  backgroundColor: '#fff',
-                  color: 'var(--color-darker)',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#fff';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] bg-white text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-sand hover:-translate-y-0.5"
               >
                 View Collections
                 <ArrowRight size={18} />
               </Link>
               <Link
                 to="/contact"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 12,
-                  padding: isMobile ? '14px 28px' : '18px 40px',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  color: '#fff',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  backdropFilter: 'blur(8px)',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
-                }}
+                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] border-2 border-white/30 text-white font-sans text-[14px] font-semibold tracking-[0.05em] uppercase backdrop-blur-[8px] transition-all duration-300 ease-smooth hover:bg-white/10 hover:border-white/50"
               >
                 Start Your Project
               </Link>
@@ -222,32 +131,12 @@ export default function Home() {
       </section>
 
       {/* ── Credentials Ticker ── */}
-      <div
-        style={{
-          backgroundColor: 'var(--color-darker)',
-          color: 'var(--color-cream)',
-          padding: '20px 0',
-          overflow: 'hidden',
-          borderTop: '1px solid var(--color-warm)',
-          borderBottom: '1px solid var(--color-warm)',
-        }}
-      >
-        <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'ticker 40s linear infinite' }}>
+      <div className="bg-darker text-cream py-5 overflow-hidden border-t border-b border-warm">
+        {/* animate-[ticker_...] runs the @keyframes ticker defined in index.css */}
+        <div className="flex whitespace-nowrap animate-[ticker_40s_linear_infinite]">
           {[...credentials, ...credentials, ...credentials].map((item, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '0 32px',
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 12 : 14,
-                fontWeight: 500,
-                letterSpacing: '0.05em',
-              }}
-            >
-              <Check size={16} style={{ color: 'var(--color-warm)', flexShrink: 0 }} />
+            <div key={i} className="inline-flex items-center gap-3 px-8 font-sans text-[12px] md:text-[14px] font-medium tracking-[0.05em]">
+              <Check className="w-4 h-4 text-warm shrink-0" />
               {item}
             </div>
           ))}
@@ -255,77 +144,41 @@ export default function Home() {
       </div>
 
       {/* ── Mission Quote ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px', backgroundColor: 'var(--color-sand)' }}>
+      <section className="bg-sand px-6 py-20 md:px-12 md:py-[140px]">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true, margin: '-100px' }}
-          style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}
+          className="max-w-[1000px] mx-auto text-center"
         >
-          <Quote size={isMobile ? 36 : 48} style={{ color: 'var(--color-warm)', margin: '0 auto 32px' }} />
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '24px' : 'clamp(32px, 4vw, 56px)',
-              fontWeight: 500,
-              lineHeight: 1.4,
-              color: 'var(--color-darker)',
-              marginBottom: 32,
-              fontStyle: 'italic',
-            }}
-          >
+          <Quote className="w-9 h-9 md:w-12 md:h-12 text-warm mx-auto mb-8" />
+          <h2 className="font-serif text-[24px] md:text-[clamp(32px,4vw,56px)] font-medium leading-[1.4] text-darker mb-8 italic">
             "We don't just manufacture furniture. We craft timeless pieces that embody the perfect harmony between nature's beauty and human ingenuity."
           </h2>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 14 : 16, fontWeight: 600, color: 'var(--color-warm)' }}>
+          <div className="font-sans text-[14px] md:text-[16px] font-semibold text-warm">
             — Satori Rattan Philosophy
           </div>
         </motion.div>
       </section>
 
       {/* ── Featured Products ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
+      <section className="px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: 48, textAlign: 'center' }}
+            className="text-center mb-12"
           >
-            <div
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: 'var(--color-warm)',
-                marginBottom: 16,
-              }}
-            >
-              Our Work
-            </div>
-            <h2
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '36px' : 'clamp(36px, 5vw, 64px)',
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                lineHeight: 1.2,
-              }}
-            >
+            <div className={eyebrow}>Our Work</div>
+            <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2]">
               Featured Products
             </h2>
           </motion.div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: isMobile ? 16 : 32,
-            }}
-          >
+          <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
             {featuredProjects.map((project, i) => (
               <motion.a
                 key={i}
@@ -336,80 +189,31 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true, margin: '-100px' }}
-                style={{
-                  position: 'relative',
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  textDecoration: 'none',
-                  display: 'block',
-                }}
+                className="group relative overflow-hidden block cursor-pointer"
               >
-                <div style={{ position: 'relative', paddingTop: '125%', overflow: 'hidden' }}>
+                <div className="relative pt-[125%] overflow-hidden">
                   <img
                     src={project.image}
                     alt={`${project.name} - ${project.category}`}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.6s var(--ease-smooth)',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                    loading="lazy"
+                    className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
                   />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      width: 32,
-                      height: 32,
-                      backgroundColor: 'rgba(254,253,251,0.95)',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: 0,
-                      transition: 'opacity 0.3s var(--ease-smooth)',
-                    }}
-                    className="external-link-icon"
-                  >
-                    <ExternalLink size={14} style={{ color: 'var(--color-darker)' }} />
+                  {/* Small icon that fades in when the card is hovered */}
+                  <div className="absolute top-3 right-3 w-8 h-8 bg-[rgba(254,253,251,0.95)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-smooth">
+                    <ExternalLink size={14} className="text-darker" />
                   </div>
                 </div>
-                <div style={{ padding: isMobile ? '12px 0' : '24px 0' }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: 11,
-                      fontWeight: 600,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'var(--color-warm)',
-                      marginBottom: 4,
-                    }}
-                  >
+                <div className="py-3 md:py-6">
+                  <div className="font-sans text-[11px] font-semibold tracking-[0.1em] uppercase text-warm mb-1">
                     {project.category}
                   </div>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: isMobile ? 16 : 24,
-                      fontWeight: 600,
-                      color: 'var(--color-darker)',
-                      marginBottom: 4,
-                    }}
-                  >
+                  <h3 className="font-serif text-[16px] md:text-[24px] font-semibold text-darker mb-1">
                     {project.name}
                   </h3>
-                  {!isMobile && (
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)' }}>
-                      {project.location}
-                    </p>
-                  )}
+                  {/* hidden on phone, shown on desktop (was the old isMobile check) */}
+                  <p className="hidden md:block font-sans text-[14px] text-muted">
+                    {project.location}
+                  </p>
                 </div>
               </motion.a>
             ))}
@@ -420,32 +224,11 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true }}
-            style={{ marginTop: isMobile ? 40 : 64, textAlign: 'center' }}
+            className="mt-10 md:mt-16 text-center"
           >
             <Link
               to="/projects"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: isMobile ? '14px 28px' : '16px 40px',
-                border: '2px solid var(--color-darker)',
-                color: 'var(--color-darker)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                transition: 'all 0.3s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                e.currentTarget.style.color = 'var(--color-cream)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = 'var(--color-darker)';
-              }}
+              className="inline-flex items-center gap-3 px-7 py-3.5 md:px-10 md:py-4 border-2 border-darker text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-darker hover:text-cream"
             >
               View All Projects
               <ArrowRight size={18} />
@@ -455,94 +238,48 @@ export default function Home() {
       </section>
 
       {/* ── Collections Preview ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px', backgroundColor: 'var(--color-sand)' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
+      <section className="bg-sand px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 40 : 64, textAlign: 'center' }}
+            className="text-center mb-10 md:mb-16"
           >
-            <h2
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '36px' : 'clamp(36px, 5vw, 64px)',
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                lineHeight: 1.2,
-                marginBottom: 16,
-              }}
-            >
+            <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
               Our Collections
             </h2>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 15 : 18,
-                color: 'var(--color-muted)',
-                maxWidth: 640,
-                margin: '0 auto',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[640px] mx-auto leading-[1.6]">
               Explore our curated range of natural and synthetic rattan furniture designed for diverse applications
             </p>
           </motion.div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
-              gap: isMobile ? 48 : 48,
-            }}
-          >
+          <div className="grid grid-cols-1 gap-12 md:gap-12 md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]">
             {/* Natural Rattan */}
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : -24 }}
+              initial={{ opacity: 0, x: -24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
-              <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', marginBottom: 24 }}>
+              <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
                   src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop"
                   alt="Natural rattan furniture collection"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    transition: 'transform 0.6s var(--ease-smooth)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  loading="lazy"
+                  className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
                 />
               </div>
-              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: isMobile ? 24 : 32, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 12 }}>
+              <h3 className="font-serif text-[24px] md:text-[32px] font-semibold text-darker mb-3">
                 Natural Rattan
               </h3>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 14 : 16, color: 'var(--color-muted)', lineHeight: 1.8, marginBottom: 24 }}>
+              <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-6">
                 Sustainably sourced natural rattan crafted using traditional techniques, offering authentic warmth and character for exclusive indoor spaces.
               </p>
               <Link
                 to="/collections"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: 'var(--color-warm)',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  transition: 'gap 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.gap = '12px')}
-                onMouseLeave={(e) => (e.currentTarget.style.gap = '8px')}
+                className="inline-flex items-center gap-2 hover:gap-3 font-sans text-[14px] font-semibold text-warm tracking-[0.05em] uppercase transition-all duration-300 ease-smooth"
               >
                 Explore Natural Collection
                 <ArrowRight size={18} />
@@ -551,50 +288,28 @@ export default function Home() {
 
             {/* Synthetic Rattan */}
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : 24 }}
+              initial={{ opacity: 0, x: 24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
-              <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden', marginBottom: 24 }}>
+              <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
                   src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop"
                   alt="Synthetic rattan furniture collection"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    transition: 'transform 0.6s var(--ease-smooth)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  loading="lazy"
+                  className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
                 />
               </div>
-              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: isMobile ? 24 : 32, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 12 }}>
+              <h3 className="font-serif text-[24px] md:text-[32px] font-semibold text-darker mb-3">
                 Synthetic Rattan
               </h3>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 14 : 16, color: 'var(--color-muted)', lineHeight: 1.8, marginBottom: 24 }}>
+              <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-6">
                 High-performance synthetic rattan engineered for extreme durability, UV resistance, and all-weather performance. Ideal for outdoor hospitality and commercial uses.
               </p>
               <Link
                 to="/collections"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: 'var(--color-warm)',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  transition: 'gap 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.gap = '12px')}
-                onMouseLeave={(e) => (e.currentTarget.style.gap = '8px')}
+                className="inline-flex items-center gap-2 hover:gap-3 font-sans text-[14px] font-semibold text-warm tracking-[0.05em] uppercase transition-all duration-300 ease-smooth"
               >
                 Explore Synthetic Collection
                 <ArrowRight size={18} />
@@ -605,82 +320,25 @@ export default function Home() {
       </section>
 
       {/* ── Craftsmanship Split ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
-              gap: isMobile ? 40 : 64,
-              alignItems: 'center',
-            }}
-          >
+      <section className="px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-1 gap-10 md:gap-16 md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] items-center">
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : -24 }}
+              initial={{ opacity: 0, x: -24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
-              <div
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  color: 'var(--color-warm)',
-                  marginBottom: 16,
-                }}
-              >
-                Our Expertise
-              </div>
-              <h2
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: isMobile ? '30px' : 'clamp(36px, 5vw, 56px)',
-                  fontWeight: 600,
-                  color: 'var(--color-darker)',
-                  lineHeight: 1.2,
-                  marginBottom: 24,
-                }}
-              >
+              <div className={eyebrow}>Our Expertise</div>
+              <h2 className="font-serif text-[30px] md:text-[clamp(36px,5vw,56px)] font-semibold text-darker leading-[1.2] mb-6">
                 Master Craftsmanship Meets Modern Innovation
               </h2>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: isMobile ? 15 : 18,
-                  color: 'var(--color-muted)',
-                  lineHeight: 1.8,
-                  marginBottom: 32,
-                }}
-              >
+              <p className="font-sans text-[15px] md:text-[18px] text-muted leading-[1.8] mb-8">
                 Every piece we create is a testament to decades of experience, combining time-honored weaving techniques with cutting-edge manufacturing processes to deliver exceptional quality at scale.
               </p>
               <Link
                 to="/craftsmanship"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: isMobile ? '14px 28px' : '16px 40px',
-                  backgroundColor: 'var(--color-darker)',
-                  color: 'var(--color-cream)',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-dark)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                className="inline-flex items-center gap-3 px-7 py-3.5 md:px-10 md:py-4 bg-darker text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark hover:-translate-y-0.5"
               >
                 Discover Our Process
                 <ArrowRight size={18} />
@@ -691,44 +349,29 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true, margin: '-100px' }}
-                style={{
-                  marginTop: 48,
-                  padding: isMobile ? 24 : 32,
-                  backgroundColor: 'var(--color-sand)',
-                  border: '1px solid var(--color-dune)',
-                }}
+                className="mt-12 p-6 md:p-8 bg-sand border border-dune"
               >
-                <div style={{ fontFamily: 'var(--font-serif)', fontSize: isMobile ? 36 : 48, fontWeight: 600, color: 'var(--color-warm)', marginBottom: 8 }}>
-                  150+
-                </div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 8 }}>
-                  Skilled Artisans
-                </div>
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)', lineHeight: 1.6 }}>
+                <div className="font-serif text-[36px] md:text-[48px] font-semibold text-warm mb-2">150+</div>
+                <div className="font-sans text-[14px] font-semibold text-darker mb-2">Skilled Artisans</div>
+                <p className="font-sans text-[14px] text-muted leading-[1.6]">
                   Our team of master craftsmen brings generations of expertise to every project
                 </p>
               </motion.div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : 24 }}
+              initial={{ opacity: 0, x: 24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
-              style={{ position: 'relative' }}
+              className="relative"
             >
-              <div style={{ position: 'relative', paddingTop: isMobile ? '80%' : '125%', overflow: 'hidden' }}>
+              <div className="relative pt-[80%] md:pt-[125%] overflow-hidden">
                 <img
                   src="/images/Master-Craftmanship.png"
                   alt="Skilled artisan weaving rattan furniture by hand"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '86.8%',
-                    objectFit: 'cover',
-                  }}
+                  loading="lazy"
+                  className="absolute top-0 left-0 w-full h-[86.8%] object-cover"
                 />
               </div>
             </motion.div>
@@ -737,15 +380,9 @@ export default function Home() {
       </section>
 
       {/* ── Stats Grid ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '96px 48px', backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: isMobile ? 24 : 48,
-            }}
-          >
+      <section className="bg-darker text-cream px-6 py-16 md:px-12 md:py-24">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-3 gap-6 md:gap-12 md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             {stats.map((stat, i) => (
               <motion.div
                 key={i}
@@ -753,28 +390,12 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true, margin: '-100px' }}
-                style={{ textAlign: 'center' }}
+                className="text-center"
               >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? '32px' : 'clamp(48px, 6vw, 72px)',
-                    fontWeight: 600,
-                    color: 'var(--color-warm)',
-                    marginBottom: 8,
-                  }}
-                >
+                <div className="font-serif text-[32px] md:text-[clamp(48px,6vw,72px)] font-semibold text-warm mb-2">
                   {stat.value}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 12 : 16,
-                    fontWeight: 500,
-                    color: 'var(--color-bark)',
-                    letterSpacing: '0.05em',
-                  }}
-                >
+                <div className="font-sans text-[12px] md:text-[16px] font-medium text-bark tracking-[0.05em]">
                   {stat.label}
                 </div>
               </motion.div>
@@ -784,99 +405,41 @@ export default function Home() {
       </section>
 
       {/* ── Process Steps ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
+      <section className="px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 40 : 64, textAlign: 'center' }}
+            className="text-center mb-10 md:mb-16"
           >
-            <div
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: 'var(--color-warm)',
-                marginBottom: 16,
-              }}
-            >
-              How We Work
-            </div>
-            <h2
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '36px' : 'clamp(36px, 5vw, 64px)',
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                lineHeight: 1.2,
-                marginBottom: 16,
-              }}
-            >
+            <div className={eyebrow}>How We Work</div>
+            <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
               Our Process
             </h2>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 15 : 18,
-                color: 'var(--color-muted)',
-                maxWidth: 640,
-                margin: '0 auto',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[640px] mx-auto leading-[1.6]">
               From concept to delivery, we ensure seamless collaboration at every stage and we made everything in house
             </p>
           </motion.div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: isMobile ? 16 : 32,
-            }}
-          >
+          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
             {processSteps.map((step, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: isMobile ? 0 : i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true, margin: '-100px' }}
-                style={{
-                  padding: isMobile ? 24 : 32,
-                  backgroundColor: 'var(--color-sand)',
-                  border: '1px solid var(--color-dune)',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-dune)';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+                className="p-6 md:p-8 bg-sand border border-dune transition-all duration-300 ease-smooth hover:bg-dune hover:-translate-y-1"
               >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? 36 : 48,
-                    fontWeight: 600,
-                    color: 'var(--color-warm)',
-                    opacity: 0.4,
-                    marginBottom: 16,
-                  }}
-                >
+                <div className="font-serif text-[36px] md:text-[48px] font-semibold text-warm opacity-40 mb-4">
                   {step.number}
                 </div>
-                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: isMobile ? 20 : 24, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 12 }}>
+                <h3 className="font-serif text-[20px] md:text-[24px] font-semibold text-darker mb-3">
                   {step.title}
                 </h3>
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 14 : 15, color: 'var(--color-muted)', lineHeight: 1.7 }}>
+                <p className="font-sans text-[14px] md:text-[15px] text-muted leading-[1.7]">
                   {step.description}
                 </p>
               </motion.div>
@@ -886,33 +449,21 @@ export default function Home() {
       </section>
 
       {/* ── Testimonial ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px', backgroundColor: 'var(--color-dune)' }}>
+      <section className="bg-dune px-6 py-20 md:px-12 md:py-[140px]">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true, margin: '-100px' }}
-          style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}
+          className="max-w-[900px] mx-auto text-center"
         >
-          <Quote size={isMobile ? 40 : 56} style={{ color: 'var(--color-warm)', margin: '0 auto 32px', opacity: 0.6 }} />
-          <p
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '20px' : 'clamp(24px, 3vw, 36px)',
-              fontWeight: 500,
-              lineHeight: 1.6,
-              color: 'var(--color-darker)',
-              marginBottom: 32,
-              fontStyle: 'italic',
-            }}
-          >
+          <Quote className="w-10 h-10 md:w-14 md:h-14 text-warm mx-auto mb-8 opacity-60" />
+          <p className="font-serif text-[20px] md:text-[clamp(24px,3vw,36px)] font-medium leading-[1.6] text-darker mb-8 italic">
             "Satori Rattan has been our exclusive furniture partner for over 15 years. Their attention to detail, consistency in quality, and ability to scale production while maintaining craftsmanship is unmatched in the industry."
           </p>
           <div>
-            <div style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 14 : 16, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 4 }}>
-              Marcus Chen
-            </div>
-            <div style={{ fontFamily: 'var(--font-sans)', fontSize: isMobile ? 13 : 14, color: 'var(--color-muted)' }}>
+            <div className="font-sans text-[14px] md:text-[16px] font-semibold text-darker mb-1">Marcus Chen</div>
+            <div className="font-sans text-[13px] md:text-[14px] text-muted">
               Director of Procurement, Horizons Hospitality Group
             </div>
           </div>
@@ -920,93 +471,31 @@ export default function Home() {
       </section>
 
       {/* ── Final CTA ── */}
-      <section style={{ padding: isMobile ? '80px 24px' : '140px 48px', backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)', textAlign: 'center' }}>
+      <section className="bg-darker text-cream text-center px-6 py-20 md:px-12 md:py-[140px]">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true, margin: '-100px' }}
-          style={{ maxWidth: 800, margin: '0 auto' }}
+          className="max-w-[800px] mx-auto"
         >
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '32px' : 'clamp(36px, 5vw, 64px)',
-              fontWeight: 600,
-              lineHeight: 1.2,
-              marginBottom: 24,
-            }}
-          >
+          <h2 className="font-serif text-[32px] md:text-[clamp(36px,5vw,64px)] font-semibold leading-[1.2] mb-6">
             Let's Create Something Exceptional Together
           </h2>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 18,
-              color: 'var(--color-bark)',
-              lineHeight: 1.8,
-              marginBottom: 48,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[18px] text-bark leading-[1.8] mb-12">
             Whether you need custom bespoke pieces or large-scale contract manufacturing, our team is ready to bring your vision to life.
           </p>
-          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flexWrap: 'wrap', gap: isMobile ? 12 : 16, justifyContent: 'center', alignItems: 'center' }}>
+          <div className="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4 justify-center items-center">
             <Link
               to="/contact"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 12,
-                padding: isMobile ? '14px 28px' : '18px 48px',
-                width: isMobile ? '100%' : 'auto',
-                backgroundColor: 'var(--color-cream)',
-                color: 'var(--color-darker)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                transition: 'all 0.3s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-cream)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className="inline-flex items-center justify-center gap-3 w-full md:w-auto px-7 py-3.5 md:px-12 md:py-[18px] bg-cream text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-sand hover:-translate-y-0.5"
             >
               Request a Quote
               <ArrowRight size={18} />
             </Link>
             <Link
               to="/bespoke"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 12,
-                padding: isMobile ? '14px 28px' : '18px 48px',
-                width: isMobile ? '100%' : 'auto',
-                border: '2px solid var(--color-warm)',
-                color: 'var(--color-cream)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                transition: 'all 0.3s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-warm)';
-                e.currentTarget.style.borderColor = 'var(--color-warm)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'var(--color-warm)';
-              }}
+              className="inline-flex items-center justify-center gap-3 w-full md:w-auto px-7 py-3.5 md:px-12 md:py-[18px] border-2 border-warm text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-warm"
             >
               Explore Bespoke Services
             </Link>

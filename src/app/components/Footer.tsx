@@ -123,7 +123,8 @@ export default function Footer() {
             </h3>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, padding: 0, margin: 0 }}>
               {footerLinks.company.map((link) => (
-                <li key={link.path}>
+                // key must be unique; several links share the same path, so key on the label
+                <li key={link.label}>
                   <Link
                     to={link.path}
                     style={{

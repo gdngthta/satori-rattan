@@ -1,13 +1,12 @@
 import { motion } from 'motion/react';
 import { CheckCircle2, ArrowRight, Palette, Ruler, Cog, Globe } from 'lucide-react';
 import { Link } from 'react-router';
-import { useIsMobile } from '../hooks/useWindowSize';
+import { fadeUp } from '../lib/animations';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-};
+// ═══════════════════════════════════════════════════════════════════════════
+//  COPYWRITING lives in these arrays (the process steps + capability cards).
+//  Change the text inside the quotes to reword anything. Keep field names.
+// ═══════════════════════════════════════════════════════════════════════════
 
 const processSteps = [
   {
@@ -71,263 +70,122 @@ const capabilities = [
   },
 ];
 
+// Reused label (no-prefix = phone, md: = desktop >= 768px).
+const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm';
+
 export default function Bespoke() {
-  const isMobile = useIsMobile();
-
   return (
-    <div style={{ paddingTop: isMobile ? 64 : 80 }}>
+    <div className="pt-16 md:pt-20">
 
-      {/* ── Hero ── */}
-      <section style={{ padding: isMobile ? '80px 24px 64px' : '120px 48px 96px', backgroundColor: 'var(--color-sand)' }}>
-        <motion.div {...fadeUp} style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'var(--color-warm)',
-              marginBottom: 16,
-            }}
-          >
-            Bespoke Manufacturing
-          </div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '38px' : 'clamp(48px, 6vw, 84px)',
-              fontWeight: 600,
-              lineHeight: 1.1,
-              color: 'var(--color-darker)',
-              marginBottom: 24,
-            }}
-          >
+      {/* ── Hero ──  (headline copy here) */}
+      <section className="bg-sand px-6 pt-20 pb-16 md:px-12 md:pt-30 md:pb-24">
+        <motion.div {...fadeUp} className="max-w-[1200px] mx-auto text-center">
+          <div className={`${eyebrow} mb-4`}>Bespoke Manufacturing</div>
+          <h1 className="font-serif text-[38px] md:text-[clamp(48px,6vw,84px)] font-semibold leading-[1.1] text-darker mb-6">
             Custom Rattan Solutions
           </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 20,
-              color: 'var(--color-muted)',
-              maxWidth: 800,
-              margin: '0 auto',
-              lineHeight: 1.6,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[20px] text-muted max-w-[800px] mx-auto leading-[1.6]">
             From initial concept to final delivery, we partner with you to create bespoke rattan furniture that brings your unique vision to life
           </p>
         </motion.div>
       </section>
 
       {/* ── Process Steps ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <section className="px-6 py-16 md:px-12 md:py-[140px]">
+        <div className="max-w-[1200px] mx-auto">
+          {/* Section heading copy */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 48 : 80, textAlign: 'center' }}
+            className="text-center mb-12 md:mb-20"
           >
-            <h2
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '32px' : 'clamp(36px, 5vw, 64px)',
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                lineHeight: 1.2,
-                marginBottom: 16,
-              }}
-            >
+            <h2 className="font-serif text-[32px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
               Our Bespoke Process
             </h2>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 15 : 18,
-                color: 'var(--color-muted)',
-                maxWidth: 700,
-                margin: '0 auto',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[700px] mx-auto leading-[1.6]">
               A proven six-stage methodology ensuring seamless collaboration from concept to completion
             </p>
           </motion.div>
 
-          {processSteps.map((step, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-              viewport={{ once: true, margin: '-100px' }}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '200px 1fr',
-                gap: isMobile ? 16 : 48,
-                marginBottom: isMobile ? 40 : 64,
-                paddingBottom: i < processSteps.length - 1 ? (isMobile ? 40 : 64) : 0,
-                borderBottom: i < processSteps.length - 1 ? '1px solid var(--color-dune)' : 'none',
-              }}
-            >
-              {/* Step Number + Title */}
-              <div style={{ display: isMobile ? 'flex' : 'block', alignItems: isMobile ? 'center' : 'flex-start', gap: isMobile ? 16 : 0 }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? 48 : 72,
-                    fontWeight: 300,
-                    color: 'var(--color-warm)',
-                    opacity: 0.4,
-                    lineHeight: 1,
-                    marginBottom: isMobile ? 0 : 16,
-                    flexShrink: 0,
-                  }}
-                >
-                  {step.number}
+          {processSteps.map((step, i) => {
+            const notLast = i < processSteps.length - 1;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                viewport={{ once: true, margin: '-100px' }}
+                className={`grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 md:gap-12 mb-10 md:mb-16 ${notLast ? 'pb-10 md:pb-16 border-b border-dune' : ''}`}
+              >
+                {/* Step number + title (row on phone, stacked on desktop) */}
+                <div className="flex items-center gap-4 md:block">
+                  <div className="font-serif text-[48px] md:text-[72px] font-light text-warm opacity-40 leading-none shrink-0 md:mb-4">
+                    {step.number}
+                  </div>
+                  <h3 className="font-serif text-[20px] md:text-[28px] font-semibold text-darker leading-[1.3]">
+                    {step.title}
+                  </h3>
                 </div>
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? 20 : 28,
-                    fontWeight: 600,
-                    color: 'var(--color-darker)',
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {step.title}
-                </h3>
-              </div>
 
-              {/* Description + Bullets */}
-              <div>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 14 : 16,
-                    color: 'var(--color-muted)',
-                    lineHeight: 1.8,
-                    marginBottom: 24,
-                  }}
-                >
-                  {step.description}
-                </p>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-                    gap: isMobile ? 10 : 16,
-                  }}
-                >
-                  {step.bullets.map((bullet, j) => (
-                    <div key={j} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                      <CheckCircle2 size={16} style={{ color: 'var(--color-warm)', flexShrink: 0, marginTop: 2 }} />
-                      <span
-                        style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontSize: isMobile ? 13 : 14,
-                          color: 'var(--color-darker)',
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        {bullet}
-                      </span>
-                    </div>
-                  ))}
+                {/* Description + bullet checklist */}
+                <div>
+                  <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-6">
+                    {step.description}
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-4">
+                    {step.bullets.map((bullet, j) => (
+                      <div key={j} className="flex gap-2.5 items-start">
+                        <CheckCircle2 className="w-4 h-4 text-warm shrink-0 mt-0.5" />
+                        <span className="font-sans text-[13px] md:text-[14px] text-darker leading-[1.6]">
+                          {bullet}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
       {/* ── Capabilities ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '140px 48px', backgroundColor: 'var(--color-sand)' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
+      <section className="bg-sand px-6 py-16 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          {/* Section heading copy */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 40 : 64, textAlign: 'center' }}
+            className="text-center mb-10 md:mb-16"
           >
-            <h2
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? '32px' : 'clamp(36px, 5vw, 56px)',
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                lineHeight: 1.2,
-                marginBottom: 16,
-              }}
-            >
+            <h2 className="font-serif text-[32px] md:text-[clamp(36px,5vw,56px)] font-semibold text-darker leading-[1.2] mb-4">
               Our Capabilities
             </h2>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: isMobile ? 15 : 18,
-                color: 'var(--color-muted)',
-                maxWidth: 700,
-                margin: '0 auto',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[700px] mx-auto leading-[1.6]">
               Comprehensive bespoke services tailored to your project needs
             </p>
           </motion.div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: isMobile ? 16 : 32,
-            }}
-          >
+          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
             {capabilities.map((capability, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: isMobile ? 0 : i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true, margin: '-100px' }}
-                style={{
-                  padding: isMobile ? 24 : 40,
-                  backgroundColor: 'var(--color-cream)',
-                  border: '1px solid var(--color-dune)',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.borderColor = 'var(--color-warm)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'var(--color-dune)';
-                }}
+                className="p-6 md:p-10 bg-cream border border-dune transition-all duration-300 ease-smooth hover:-translate-y-1 hover:border-warm"
               >
-                <capability.icon size={isMobile ? 32 : 40} style={{ color: 'var(--color-warm)', marginBottom: isMobile ? 16 : 24 }} />
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? 20 : 24,
-                    fontWeight: 600,
-                    color: 'var(--color-darker)',
-                    marginBottom: 12,
-                  }}
-                >
+                <capability.icon className="w-8 h-8 md:w-10 md:h-10 text-warm mb-4 md:mb-6" />
+                <h3 className="font-serif text-[20px] md:text-[24px] font-semibold text-darker mb-3">
                   {capability.title}
                 </h3>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 14 : 15,
-                    color: 'var(--color-muted)',
-                    lineHeight: 1.7,
-                  }}
-                >
+                <p className="font-sans text-[14px] md:text-[15px] text-muted leading-[1.7]">
                   {capability.description}
                 </p>
               </motion.div>
@@ -337,64 +195,23 @@ export default function Bespoke() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '96px 48px', backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)', textAlign: 'center' }}>
+      <section className="bg-darker text-cream text-center px-6 py-16 md:px-12 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true }}
-          style={{ maxWidth: 800, margin: '0 auto' }}
+          className="max-w-[800px] mx-auto"
         >
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '28px' : 'clamp(36px, 5vw, 56px)',
-              fontWeight: 600,
-              lineHeight: 1.2,
-              marginBottom: 24,
-            }}
-          >
+          <h2 className="font-serif text-[28px] md:text-[clamp(36px,5vw,56px)] font-semibold leading-[1.2] mb-6">
             Let's Discuss Your Custom Project
           </h2>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 18,
-              color: 'var(--color-bark)',
-              lineHeight: 1.8,
-              marginBottom: 40,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[18px] text-bark leading-[1.8] mb-10">
             Our bespoke team is ready to explore your design vision and create a tailored solution for your project
           </p>
           <Link
             to="/contact"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 12,
-              padding: isMobile ? '14px 32px' : '18px 48px',
-              width: isMobile ? '100%' : 'auto',
-              maxWidth: isMobile ? 320 : 'none',
-              backgroundColor: 'var(--color-cream)',
-              color: 'var(--color-darker)',
-              fontFamily: 'var(--font-sans)',
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-              transition: 'all 0.3s var(--ease-smooth)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-cream)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-8 py-3.5 md:px-12 md:py-[18px] bg-cream text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-sand hover:-translate-y-0.5"
           >
             Start a Bespoke Project
             <ArrowRight size={18} />

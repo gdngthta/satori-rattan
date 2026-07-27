@@ -2,41 +2,22 @@ import { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import emailjs from '@emailjs/browser';
-import { useIsMobile } from '../hooks/useWindowSize';
+import { fadeUp } from '../lib/animations';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-};
-
+// COPYWRITING: the two headline stats shown in the dark bar.
 const contactStats = [
   { value: '3 Business Day', label: 'Response Time' },
   { value: '98%', label: 'Client Satisfaction' },
 ];
 
-const inputStyle = (isMobile: boolean) => ({
-  width: '100%',
-  padding: isMobile ? '10px 14px' : '12px 16px',
-  fontFamily: 'var(--font-sans)',
-  fontSize: 14,
-  border: '1px solid var(--color-dune)',
-  backgroundColor: 'var(--color-cream)',
-  color: 'var(--color-darker)',
-  boxSizing: 'border-box' as const,
-});
-
-const labelStyle = {
-  display: 'block',
-  fontFamily: 'var(--font-sans)',
-  fontSize: 13,
-  fontWeight: 600,
-  color: 'var(--color-darker)',
-  marginBottom: 8,
-};
+// Shared field styles. Written once, used by every input/select/textarea.
+// focus:border-warm gives a visible highlight when a field is selected — and we
+// keep the browser's default focus outline (not removed) so keyboard users can see it.
+const inputClass =
+  'w-full px-3.5 py-2.5 md:px-4 md:py-3 font-sans text-[14px] border border-dune bg-cream text-darker focus:border-warm';
+const labelClass = 'block font-sans text-[13px] font-semibold text-darker mb-2';
 
 export default function Contact() {
-  const isMobile = useIsMobile();
   const formRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState({
     companyName: '',
@@ -96,62 +77,71 @@ export default function Contact() {
     }
   };
 
+  // Contact sidebar rows. Content is JSX so phone/email can be clickable links.
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: 'Head Office',
+      content: (
+        <p className="font-sans text-[14px] text-muted leading-[1.6]">
+          Jl. Suryadinata no. 6 Desa Marikangen<br />
+          Kecamatan Plumbon, Kabupaten Cirebon<br />
+          West Java 45155, Indonesia
+        </p>
+      ),
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      content: (
+        <a href="tel:+622318765432" className="font-sans text-[14px] text-muted block">
+          +62 231 876 5432
+        </a>
+      ),
+    },
+    {
+      icon: Mail,
+      title: 'Email',
+      content: (
+        <a href="mailto:info@satorirattan.com" className="font-sans text-[14px] text-muted block break-all">
+          info@satorirattan.com
+        </a>
+      ),
+    },
+    {
+      icon: Clock,
+      title: 'Business Hours',
+      content: (
+        <p className="font-sans text-[14px] text-muted leading-[1.6]">
+          Monday - Friday<br />
+          8:00 AM - 4:00 PM (WIB)
+        </p>
+      ),
+    },
+  ];
+
   return (
-    <div style={{ paddingTop: isMobile ? 64 : 80 }}>
+    <div className="pt-16 md:pt-20">
 
       {/* ── Hero ── */}
-      <section style={{ padding: isMobile ? '80px 24px 64px' : '120px 48px 96px', backgroundColor: 'var(--color-sand)' }}>
-        <motion.div {...fadeUp} style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'var(--color-warm)',
-              marginBottom: 16,
-            }}
-          >
+      <section className="bg-sand px-6 pt-20 pb-16 md:px-12 md:pt-30 md:pb-24">
+        <motion.div {...fadeUp} className="max-w-[1200px] mx-auto text-center">
+          <div className="font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-4">
             Get in Touch
           </div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '38px' : 'clamp(48px, 6vw, 84px)',
-              fontWeight: 600,
-              lineHeight: 1.1,
-              color: 'var(--color-darker)',
-              marginBottom: 24,
-            }}
-          >
+          <h1 className="font-serif text-[38px] md:text-[clamp(48px,6vw,84px)] font-semibold leading-[1.1] text-darker mb-6">
             Let's Start Your Project
           </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 20,
-              color: 'var(--color-muted)',
-              maxWidth: 800,
-              margin: '0 auto',
-              lineHeight: 1.6,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[20px] text-muted max-w-[800px] mx-auto leading-[1.6]">
             Our team is ready to discuss your requirements and provide tailored solutions for your furniture needs
           </p>
         </motion.div>
       </section>
 
       {/* ── Stats Bar ── */}
-      <section style={{ padding: isMobile ? '40px 24px' : '64px 48px', backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: isMobile ? 24 : 48,
-            }}
-          >
+      <section className="bg-darker text-cream px-6 py-10 md:px-12 md:py-16">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-2 gap-6 md:gap-12">
             {contactStats.map((stat, i) => (
               <motion.div
                 key={i}
@@ -159,28 +149,12 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
                 viewport={{ once: true }}
-                style={{ textAlign: 'center' }}
+                className="text-center"
               >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? '28px' : 'clamp(36px, 4vw, 48px)',
-                    fontWeight: 600,
-                    color: 'var(--color-warm)',
-                    marginBottom: 8,
-                  }}
-                >
+                <div className="font-serif text-[28px] md:text-[clamp(36px,4vw,48px)] font-semibold text-warm mb-2">
                   {stat.value}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 14,
-                    fontWeight: 500,
-                    color: 'var(--color-bark)',
-                    letterSpacing: '0.05em',
-                  }}
-                >
+                <div className="font-sans text-[13px] md:text-[14px] font-medium text-bark tracking-[0.05em]">
                   {stat.label}
                 </div>
               </motion.div>
@@ -190,106 +164,35 @@ export default function Contact() {
       </section>
 
       {/* ── Main Content ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr',
-              gap: isMobile ? 48 : 64,
-            }}
-          >
+      <section className="px-6 py-16 md:px-12 md:py-[140px]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 md:gap-16">
+
             {/* ── Contact Sidebar ── */}
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : -24 }}
+              initial={{ opacity: 0, x: -24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
-              <h2
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: isMobile ? '24px' : 32,
-                  fontWeight: 600,
-                  color: 'var(--color-darker)',
-                  marginBottom: 32,
-                }}
-              >
+              <h2 className="font-serif text-[24px] md:text-[32px] font-semibold text-darker mb-8">
                 Contact Information
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 24 : 32 }}>
-                {[
-                  {
-                    icon: MapPin,
-                    title: 'Head Office',
-                    content: (
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)', lineHeight: 1.6, margin: 0 }}>
-                        Jl. Suryadinata no. 6 Desa Marikangen<br />
-                        Kecamatan Plumbon, Kabupaten Cirebon<br />
-                        West Java 45155, Indonesia
-                      </p>
-                    ),
-                  },
-                  {
-                    icon: Phone,
-                    title: 'Phone',
-                    content: (
-                      <a href="tel:+622318765432" style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)', display: 'block' }}>
-                        +62 231 876 5432
-                      </a>
-                    ),
-                  },
-                  {
-                    icon: Mail,
-                    title: 'Email',
-                    content: (
-                      <a href="mailto:info@satorirattan.com" style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)', display: 'block', wordBreak: 'break-all' as const }}>
-                        info@satorirattan.com
-                      </a>
-                    ),
-                  },
-                  {
-                    icon: Clock,
-                    title: 'Business Hours',
-                    content: (
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--color-muted)', lineHeight: 1.6, margin: 0 }}>
-                        Monday - Friday<br />
-                        8:00 AM - 4:00 PM (WIB)
-                      </p>
-                    ),
-                  },
-                ].map(({ icon: Icon, title, content }) => (
-                  <div key={title} style={{ display: 'flex', gap: 12 }}>
-                    <Icon size={20} style={{ color: 'var(--color-warm)', flexShrink: 0, marginTop: 2 }} />
+              <div className="flex flex-col gap-6 md:gap-8">
+                {contactInfo.map(({ icon: Icon, title, content }) => (
+                  <div key={title} className="flex gap-3">
+                    <Icon className="w-5 h-5 text-warm shrink-0 mt-0.5" />
                     <div>
-                      <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14, fontWeight: 600, color: 'var(--color-darker)', marginBottom: 4 }}>
-                        {title}
-                      </div>
+                      <div className="font-sans text-[14px] font-semibold text-darker mb-1">{title}</div>
                       {content}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div
-                style={{
-                  marginTop: isMobile ? 32 : 48,
-                  padding: isMobile ? 20 : 24,
-                  backgroundColor: 'var(--color-sand)',
-                  border: '1px solid var(--color-dune)',
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: 14,
-                    color: 'var(--color-muted)',
-                    lineHeight: 1.7,
-                    fontStyle: 'italic',
-                    margin: 0,
-                  }}
-                >
+              <div className="mt-8 md:mt-12 p-5 md:p-6 bg-sand border border-dune">
+                <p className="font-sans text-[14px] text-muted leading-[1.7] italic">
                   "For urgent inquiries or large-scale projects, please call us directly. You can send technical drawings and specifications after we make initial contact."
                 </p>
               </div>
@@ -297,85 +200,58 @@ export default function Contact() {
 
             {/* ── RFQ Form ── */}
             <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : 24 }}
+              initial={{ opacity: 0, x: 24 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
               {!submitted ? (
-                <div style={{ backgroundColor: 'var(--color-sand)', padding: isMobile ? 24 : 48, border: '1px solid var(--color-dune)' }}>
-                  <h2
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: isMobile ? '24px' : 32,
-                      fontWeight: 600,
-                      color: 'var(--color-darker)',
-                      marginBottom: 12,
-                    }}
-                  >
+                <div className="bg-sand p-6 md:p-12 border border-dune">
+                  <h2 className="font-serif text-[24px] md:text-[32px] font-semibold text-darker mb-3">
                     Request for Quotation
                   </h2>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: 14,
-                      color: 'var(--color-muted)',
-                      marginBottom: 32,
-                      lineHeight: 1.6,
-                    }}
-                  >
+                  <p className="font-sans text-[14px] text-muted mb-8 leading-[1.6]">
                     Complete the form below and our team will respond within 3 business day with a detailed quotation
                   </p>
 
                   {error && (
-                    <div
-                      style={{
-                        padding: 16,
-                        backgroundColor: '#fee',
-                        border: '1px solid #fcc',
-                        marginBottom: 24,
-                        display: 'flex',
-                        gap: 12,
-                        alignItems: 'flex-start',
-                        borderRadius: 4,
-                      }}
-                    >
-                      <AlertCircle size={20} style={{ color: '#c00', flexShrink: 0, marginTop: 2 }} />
-                      <span style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: '#c00', lineHeight: 1.5 }}>{error}</span>
+                    <div className="p-4 bg-[#fee] border border-[#fcc] mb-6 flex gap-3 items-start rounded">
+                      <AlertCircle className="w-5 h-5 text-[#c00] shrink-0 mt-0.5" />
+                      <span className="font-sans text-[14px] text-[#c00] leading-[1.5]">{error}</span>
                     </div>
                   )}
 
-                  <form ref={formRef} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
+                  <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-6">
 
                     {/* Company + Contact Name */}
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16 }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label style={labelStyle}>Company Name *</label>
-                        <input type="text" name="company_name" required value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} style={inputStyle(isMobile)} />
+                        <label htmlFor="company_name" className={labelClass}>Company Name *</label>
+                        <input id="company_name" type="text" name="company_name" required autoComplete="organization" value={formData.companyName} onChange={(e) => setFormData({ ...formData, companyName: e.target.value })} className={inputClass} />
                       </div>
                       <div>
-                        <label style={labelStyle}>Contact Name *</label>
-                        <input type="text" name="from_name" required value={formData.contactName} onChange={(e) => setFormData({ ...formData, contactName: e.target.value })} style={inputStyle(isMobile)} />
+                        <label htmlFor="from_name" className={labelClass}>Contact Name *</label>
+                        <input id="from_name" type="text" name="from_name" required autoComplete="name" value={formData.contactName} onChange={(e) => setFormData({ ...formData, contactName: e.target.value })} className={inputClass} />
                       </div>
                     </div>
 
                     {/* Email + Phone */}
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16 }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label style={labelStyle}>Email *</label>
-                        <input type="email" name="reply_to" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} style={inputStyle(isMobile)} />
+                        <label htmlFor="reply_to" className={labelClass}>Email *</label>
+                        <input id="reply_to" type="email" name="reply_to" required autoComplete="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={inputClass} />
                       </div>
                       <div>
-                        <label style={labelStyle}>Phone</label>
-                        <input type="tel" name="phone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} style={inputStyle(isMobile)} />
+                        <label htmlFor="phone" className={labelClass}>Phone</label>
+                        <input id="phone" type="tel" name="phone" autoComplete="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className={inputClass} />
                       </div>
                     </div>
 
                     {/* Project Type + Quantity */}
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16 }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label style={labelStyle}>Project Type *</label>
-                        <select name="project_type" required value={formData.projectType} onChange={(e) => setFormData({ ...formData, projectType: e.target.value })} style={inputStyle(isMobile)}>
+                        <label htmlFor="project_type" className={labelClass}>Project Type *</label>
+                        <select id="project_type" name="project_type" required value={formData.projectType} onChange={(e) => setFormData({ ...formData, projectType: e.target.value })} className={inputClass}>
                           <option value="">Select type</option>
                           <option value="hospitality">Hospitality</option>
                           <option value="residential">Residential</option>
@@ -385,15 +261,15 @@ export default function Contact() {
                         </select>
                       </div>
                       <div>
-                        <label style={labelStyle}>Estimated Quantity</label>
-                        <input type="text" name="quantity" placeholder="e.g., 200 pieces" value={formData.quantity} onChange={(e) => setFormData({ ...formData, quantity: e.target.value })} style={inputStyle(isMobile)} />
+                        <label htmlFor="quantity" className={labelClass}>Estimated Quantity</label>
+                        <input id="quantity" type="text" name="quantity" placeholder="e.g., 200 pieces" value={formData.quantity} onChange={(e) => setFormData({ ...formData, quantity: e.target.value })} className={inputClass} />
                       </div>
                     </div>
 
                     {/* Budget */}
                     <div>
-                      <label style={labelStyle}>Budget Range</label>
-                      <select name="budget" value={formData.budget} onChange={(e) => setFormData({ ...formData, budget: e.target.value })} style={inputStyle(isMobile)}>
+                      <label htmlFor="budget" className={labelClass}>Budget Range</label>
+                      <select id="budget" name="budget" value={formData.budget} onChange={(e) => setFormData({ ...formData, budget: e.target.value })} className={inputClass}>
                         <option value="">Select range</option>
                         <option value="<25k">Under $25,000</option>
                         <option value="25k-50k">$25,000 - $50,000</option>
@@ -404,90 +280,38 @@ export default function Contact() {
 
                     {/* Message */}
                     <div>
-                      <label style={labelStyle}>Project Details *</label>
+                      <label htmlFor="message" className={labelClass}>Project Details *</label>
                       <textarea
+                        id="message"
                         name="message"
                         required
-                        rows={isMobile ? 4 : 5}
+                        rows={5}
                         placeholder="Please describe your project requirements, including furniture types, styles, quantities, and any specific needs..."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        style={{
-                          ...inputStyle(isMobile),
-                          resize: 'vertical',
-                        }}
+                        className={`${inputClass} resize-y`}
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading}
-                      style={{
-                        padding: isMobile ? '14px 24px' : '16px 48px',
-                        width: isMobile ? '100%' : 'auto',
-                        backgroundColor: loading ? 'var(--color-muted)' : 'var(--color-darker)',
-                        color: 'var(--color-cream)',
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: 14,
-                        fontWeight: 600,
-                        letterSpacing: '0.05em',
-                        textTransform: 'uppercase' as const,
-                        transition: 'all 0.3s var(--ease-smooth)',
-                        cursor: loading ? 'not-allowed' : 'pointer',
-                        opacity: loading ? 0.7 : 1,
-                        border: 'none',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!loading) e.currentTarget.style.backgroundColor = 'var(--color-dark)';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!loading) e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                      }}
+                      className="self-start w-full md:w-auto px-6 py-3.5 md:px-12 md:py-4 bg-darker text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark disabled:bg-muted disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {loading ? 'Sending...' : 'Submit Request'}
                     </button>
                   </form>
                 </div>
               ) : (
-                <div
-                  style={{
-                    backgroundColor: 'var(--color-sand)',
-                    padding: isMobile ? 32 : 64,
-                    border: '1px solid var(--color-dune)',
-                    textAlign: 'center',
-                  }}
-                >
-                  <CheckCircle size={isMobile ? 48 : 64} style={{ color: 'var(--color-warm)', margin: '0 auto 24px' }} />
-                  <h2
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: isMobile ? '28px' : 36,
-                      fontWeight: 600,
-                      color: 'var(--color-darker)',
-                      marginBottom: 16,
-                    }}
-                  >
+                <div className="bg-sand p-8 md:p-16 border border-dune text-center">
+                  <CheckCircle className="w-12 h-12 md:w-16 md:h-16 text-warm mx-auto mb-6" />
+                  <h2 className="font-serif text-[28px] md:text-[36px] font-semibold text-darker mb-4">
                     Thank You!
                   </h2>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: isMobile ? 14 : 16,
-                      color: 'var(--color-muted)',
-                      lineHeight: 1.8,
-                      marginBottom: 32,
-                    }}
-                  >
+                  <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-8">
                     Your inquiry has been received successfully. Our sales team will review your requirements and respond within 3 business day with a detailed quotation.
                   </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: 14,
-                      color: 'var(--color-muted)',
-                      fontStyle: 'italic',
-                    }}
-                  >
+                  <p className="font-sans text-[14px] text-muted italic">
                     Reference: RFQ-{Date.now().toString().slice(-6)}
                   </p>
                 </div>

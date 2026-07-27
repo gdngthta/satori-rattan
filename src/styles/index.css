@@ -2,63 +2,58 @@
 @import './tailwind.css';
 @import './theme.css';
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* @layer base = these global resets/defaults live INSIDE Tailwind's cascade
+   layers, so a Tailwind utility class (e.g. pt-20, text-cream) always beats them.
+   WITHOUT this wrapper, these un-layered rules would override every Tailwind
+   class and silently zero out all padding/margins/colors. */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-cream);
+    color: var(--color-darker);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body.drawer-open {
+    overflow: hidden;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  button {
+    font-family: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
-/* Responsive Grid Utility Classes */
+/* Temporary mobile fallback for pages NOT yet migrated to Tailwind.
+   Stays un-layered on purpose (needs !important to beat their inline styles).
+   ponytail: delete this whole block once every page uses Tailwind classes. */
 @media (max-width: 768px) {
-
-  /* Fix all sections padding */
-  section {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-
-  /* Fix hero sections */
-  .hero-content {
-    padding: 0 24px !important;
-  }
-
-  /* Fix all grids to single column on mobile */
   [style*="gridTemplateColumns: '1fr 2fr'"],
   [style*="gridTemplateColumns: '2fr 1fr'"],
   [style*="gridTemplateColumns: '1fr 1fr'"],
   [style*="gridTemplateColumns: 'repeat(2, 1fr)'"] {
     grid-template-columns: 1fr !important;
   }
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-cream);
-  color: var(--color-darker);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body.drawer-open {
-  overflow: hidden;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-button {
-  font-family: inherit;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
 }
 
 @keyframes ticker {

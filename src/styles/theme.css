@@ -1,18 +1,26 @@
-:root {
-    /* Colors */
-    --color-cream: #fefdfb;
-    --color-sand: #f5f3f0;
-    --color-dune: #eae5de;
-    --color-bark: #d4c5b9;
-    --color-warm: #8b7969;
-    --color-dark: #2c2926;
-    --color-darker: #221f1c;
-    --color-muted: #6b5e52;
-  
-    /* Typography */
-    --font-serif: 'Cormorant Garamond', serif;
-    --font-sans: 'Inter', sans-serif;
-  
-    /* Animations */
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  }
+/* @theme = Tailwind's "dictionary" of the brand's colors, fonts, and easings.
+   Putting a value here does TWO things at once:
+     1. It stays a normal CSS variable (so old code using var(--color-warm) keeps working).
+     2. Tailwind auto-creates matching shortcut classes:
+          --color-warm   ->  bg-warm / text-warm / border-warm
+          --font-serif   ->  font-serif
+          --ease-smooth  ->  ease-smooth
+   So we define each brand value ONCE here, and use short labels everywhere else. */
+@theme {
+  /* Colors */
+  --color-cream: #fefdfb;
+  --color-sand: #f5f3f0;
+  --color-dune: #eae5de;
+  --color-bark: #d4c5b9;
+  --color-warm: #8b7969;
+  --color-dark: #2c2926;
+  --color-darker: #221f1c;
+  --color-muted: #6b5e52;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+
+  /* Animation easing (the "speed curve" of transitions) */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,14 +1,9 @@
 import { motion } from 'motion/react';
 import { MapPin, Ruler, Package, Clock, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
-import { useIsMobile } from '../hooks/useWindowSize';
+import { fadeUp } from '../lib/animations';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-};
-
+// ── Page data (unchanged) ──
 const projects = [
   {
     name: 'Maison Tropicale Resort',
@@ -84,311 +79,142 @@ const projects = [
   },
 ];
 
-export default function Projects() {
-  const isMobile = useIsMobile();
+// Reused label styles. A "class" here is just a string of Tailwind shortcuts.
+// No-prefix labels = phone; the md: prefix kicks in on desktop (screens >= 768px).
+const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm';
+const detailLabel = 'font-sans text-[11px] font-semibold tracking-[0.05em] uppercase text-warm mb-1';
 
+export default function Projects() {
   return (
-    <div style={{ paddingTop: isMobile ? 64 : 80 }}>
+    // pt-16 (64px) on phone, pt-20 (80px) on desktop — clears the fixed header.
+    <div className="pt-16 md:pt-20">
 
       {/* ── Hero ── */}
-      <section style={{ padding: isMobile ? '80px 24px 64px' : '120px 48px 96px', backgroundColor: 'var(--color-sand)' }}>
-        <motion.div {...fadeUp} style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'var(--color-warm)',
-              marginBottom: 16,
-            }}
-          >
-            Portfolio
-          </div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '38px' : 'clamp(48px, 6vw, 84px)',
-              fontWeight: 600,
-              lineHeight: 1.1,
-              color: 'var(--color-darker)',
-              marginBottom: 24,
-            }}
-          >
+      <section className="bg-sand px-6 pt-20 pb-16 md:px-12 md:pt-30 md:pb-24">
+        <motion.div {...fadeUp} className="max-w-[1200px] mx-auto text-center">
+          <div className={`${eyebrow} mb-4`}>Portfolio</div>
+          <h1 className="font-serif text-[38px] md:text-[clamp(48px,6vw,84px)] font-semibold leading-[1.1] text-darker mb-6">
             Featured Projects
           </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 20,
-              color: 'var(--color-muted)',
-              maxWidth: 800,
-              margin: '0 auto',
-              lineHeight: 1.6,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[20px] text-muted max-w-[800px] mx-auto leading-[1.6]">
             Discover how we've partnered with leading brands worldwide to deliver exceptional rattan furniture solutions for diverse applications
           </p>
         </motion.div>
       </section>
 
       {/* ── Case Studies ── */}
-      <section style={{ padding: '0 0 80px' }}>
-        {projects.map((project, i) => (
-          <div
-            key={i}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-              minHeight: isMobile ? 'auto' : 600,
-              backgroundColor: i % 2 === 0 ? 'var(--color-cream)' : 'var(--color-sand)',
-            }}
-          >
-            {/* Image */}
-            <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : i % 2 === 0 ? -40 : 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-              viewport={{ once: true, margin: '-100px' }}
-              style={{
-                order: isMobile ? 1 : i % 2 === 0 ? 1 : 2,
-                position: 'relative',
-                overflow: 'hidden',
-                minHeight: isMobile ? 260 : 'auto',
-              }}
+      <section className="pb-20">
+        {projects.map((project, i) => {
+          const even = i % 2 === 0;
+          // On desktop, alternate which side the image sits. On phone it always stacks image-first.
+          const imageOrder = even ? 'md:order-1' : 'md:order-2';
+          const contentOrder = even ? 'md:order-2' : 'md:order-1';
+
+          return (
+            <div
+              key={i}
+              className={`grid grid-cols-1 md:grid-cols-2 md:min-h-[600px] ${even ? 'bg-cream' : 'bg-sand'}`}
             >
-              <img
-                src={project.image}
-                alt={`${project.name} in ${project.location} - ${project.tags.join(', ')} project`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'transform 0.6s var(--ease-smooth)',
-                  display: 'block',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              />
-            </motion.div>
-
-            {/* Content */}
-            <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : i % 2 === 0 ? 40 : -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-              viewport={{ once: true, margin: '-100px' }}
-              style={{
-                order: isMobile ? 2 : i % 2 === 0 ? 2 : 1,
-                padding: isMobile ? '32px 24px' : 64,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              {/* Tags */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: isMobile ? 16 : 24 }}>
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      padding: isMobile ? '4px 12px' : '6px 16px',
-                      backgroundColor: 'var(--color-dune)',
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: 11,
-                      fontWeight: 600,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: 'var(--color-warm)',
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Title */}
-              <h2
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: isMobile ? '26px' : 'clamp(32px, 4vw, 48px)',
-                  fontWeight: 600,
-                  color: 'var(--color-darker)',
-                  marginBottom: isMobile ? 12 : 16,
-                  lineHeight: 1.2,
-                }}
+              {/* Image */}
+              <motion.div
+                initial={{ opacity: 0, x: even ? -40 : 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                viewport={{ once: true, margin: '-100px' }}
+                className={`order-1 ${imageOrder} relative overflow-hidden min-h-[260px] md:min-h-0`}
               >
-                {project.name}
-              </h2>
+                {/* hover:scale-105 replaces the old JS mouse-enter/leave handlers */}
+                <img
+                  src={project.image}
+                  alt={`${project.name} in ${project.location} - ${project.tags.join(', ')} project`}
+                  loading="lazy"
+                  className="w-full h-full object-cover block transition-transform duration-[600ms] ease-smooth hover:scale-105"
+                />
+              </motion.div>
 
-              {/* Description */}
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: isMobile ? 14 : 16,
-                  color: 'var(--color-muted)',
-                  lineHeight: 1.8,
-                  marginBottom: isMobile ? 24 : 32,
-                }}
+              {/* Content */}
+              <motion.div
+                initial={{ opacity: 0, x: even ? 40 : -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                viewport={{ once: true, margin: '-100px' }}
+                className={`order-2 ${contentOrder} flex flex-col justify-center px-6 py-8 md:p-16`}
               >
-                {project.description}
-              </p>
+                {/* Tags */}
+                <div className="flex gap-2 flex-wrap mb-4 md:mb-6">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-dune text-warm font-sans text-[11px] font-semibold tracking-[0.08em] uppercase px-3 py-1 md:px-4 md:py-1.5"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-              {/* Details Grid */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: isMobile ? 16 : 24,
-                  padding: isMobile ? '16px 0' : '24px 0',
-                  borderTop: '1px solid var(--color-bark)',
-                  borderBottom: '1px solid var(--color-bark)',
-                  marginBottom: isMobile ? 24 : 32,
-                }}
-              >
-                {[
-                  { icon: MapPin, label: 'Location', value: project.location },
-                  { icon: Ruler, label: 'Scope', value: project.scope },
-                  { icon: Package, label: 'Materials', value: project.materials },
-                  { icon: Clock, label: 'Timeline', value: project.timeline },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} style={{ display: 'flex', gap: isMobile ? 8 : 12, alignItems: 'flex-start' }}>
-                    <Icon size={isMobile ? 16 : 20} style={{ color: 'var(--color-warm)', flexShrink: 0, marginTop: 2 }} />
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontSize: 11,
-                          fontWeight: 600,
-                          letterSpacing: '0.05em',
-                          textTransform: 'uppercase',
-                          color: 'var(--color-warm)',
-                          marginBottom: 4,
-                        }}
-                      >
-                        {label}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontSize: isMobile ? 13 : 14,
-                          color: 'var(--color-darker)',
-                        }}
-                      >
-                        {value}
+                {/* Title */}
+                <h2 className="font-serif text-[26px] md:text-[clamp(32px,4vw,48px)] font-semibold text-darker leading-[1.2] mb-3 md:mb-4">
+                  {project.name}
+                </h2>
+
+                {/* Description */}
+                <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-6 md:mb-8">
+                  {project.description}
+                </p>
+
+                {/* Details grid */}
+                <div className="grid grid-cols-2 gap-4 md:gap-6 py-4 md:py-6 border-t border-b border-bark mb-6 md:mb-8">
+                  {[
+                    { icon: MapPin, label: 'Location', value: project.location },
+                    { icon: Ruler, label: 'Scope', value: project.scope },
+                    { icon: Package, label: 'Materials', value: project.materials },
+                    { icon: Clock, label: 'Timeline', value: project.timeline },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="flex gap-2 md:gap-3 items-start">
+                      {/* Icon size set via w-/h- classes so it can be responsive too */}
+                      <Icon className="w-4 h-4 md:w-5 md:h-5 text-warm shrink-0 mt-0.5" />
+                      <div>
+                        <div className={detailLabel}>{label}</div>
+                        <div className="font-sans text-[13px] md:text-[14px] text-darker">{value}</div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              {/* Visit Website Button */}
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: isMobile ? 'center' : 'flex-start',
-                  gap: 12,
-                  padding: isMobile ? '14px 24px' : '14px 32px',
-                  width: isMobile ? '100%' : 'auto',
-                  backgroundColor: 'var(--color-darker)',
-                  color: 'var(--color-cream)',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                  alignSelf: 'flex-start',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-dark)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                Visit Website
-                <ExternalLink size={16} />
-              </a>
-            </motion.div>
-          </div>
-        ))}
+                {/* Visit Website button */}
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="self-start inline-flex items-center justify-center md:justify-start gap-3 w-full md:w-auto px-6 py-3.5 md:px-8 bg-darker text-cream font-sans text-[13px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark hover:-translate-y-0.5"
+                >
+                  Visit Website
+                  <ExternalLink size={16} />
+                </a>
+              </motion.div>
+            </div>
+          );
+        })}
       </section>
 
       {/* ── CTA ── */}
-      <section
-        style={{
-          padding: isMobile ? '64px 24px' : '96px 48px',
-          backgroundColor: 'var(--color-darker)',
-          color: 'var(--color-cream)',
-          textAlign: 'center',
-        }}
-      >
+      <section className="bg-darker text-cream text-center px-6 py-16 md:px-12 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true }}
-          style={{ maxWidth: 800, margin: '0 auto' }}
+          className="max-w-[800px] mx-auto"
         >
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '28px' : 'clamp(32px, 4vw, 56px)',
-              fontWeight: 600,
-              lineHeight: 1.2,
-              marginBottom: 24,
-            }}
-          >
+          <h2 className="font-serif text-[28px] md:text-[clamp(32px,4vw,56px)] font-semibold leading-[1.2] mb-6">
             Ready to Start Your Project?
           </h2>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 18,
-              color: 'var(--color-bark)',
-              lineHeight: 1.8,
-              marginBottom: 40,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[18px] text-bark leading-[1.8] mb-10">
             Let's discuss how we can bring your vision to life with our expertise and craftsmanship
           </p>
           <Link
             to="/contact"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 12,
-              padding: isMobile ? '14px 32px' : '18px 48px',
-              width: isMobile ? '100%' : 'auto',
-              maxWidth: isMobile ? 320 : 'none',
-              backgroundColor: 'var(--color-cream)',
-              color: 'var(--color-darker)',
-              fontFamily: 'var(--font-sans)',
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-              transition: 'all 0.3s var(--ease-smooth)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-cream)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-8 py-3.5 md:px-12 md:py-[18px] bg-cream text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-sand hover:-translate-y-0.5"
           >
             Get in Touch
             <ArrowRight size={18} />

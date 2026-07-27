@@ -1,13 +1,13 @@
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { useIsMobile } from '../hooks/useWindowSize';
+import { fadeUp } from '../lib/animations';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-};
+// ═══════════════════════════════════════════════════════════════════════════
+//  PRODUCT DATA — this is the part you edit to add/change/remove products.
+//  Each { ... } block is ONE product card. Copy a whole block to add another.
+//  Keep the field names (name, image, dimensions, ...) exactly as they are.
+// ═══════════════════════════════════════════════════════════════════════════
 
 const naturalProducts = [
   {
@@ -79,6 +79,8 @@ const syntheticProducts = [
   },
 ];
 
+// The rows shown inside every product card. Edit a label here -> it changes on
+// every card at once (that's why it's written once, not per card).
 const specFields = [
   { key: 'dimensions', label: 'Dimensions' },
   { key: 'material', label: 'Material' },
@@ -86,93 +88,43 @@ const specFields = [
   { key: 'leadTime', label: 'Lead Time' },
 ];
 
-export default function Collections() {
-  const isMobile = useIsMobile();
+// Reused Tailwind label strings (no-prefix = phone, md: = desktop >= 768px).
+const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm';
 
-  const ProductGrid = ({ products }: { products: typeof naturalProducts }) => (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: isMobile ? 16 : 32,
-      }}
-    >
+// One product card grid. Reused for both the Natural and Synthetic lists.
+function ProductGrid({ products }: { products: typeof naturalProducts }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
       {products.map((product, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: isMobile ? 0 : i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true, margin: '-100px' }}
-          style={{
-            backgroundColor: 'var(--color-sand)',
-            overflow: 'hidden',
-            transition: 'transform 0.3s var(--ease-smooth)',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-4px)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+          // "group" lets the image react when the whole card is hovered.
+          className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
         >
-          <div style={{ position: 'relative', paddingTop: '125%', overflow: 'hidden' }}>
+          {/* pt-[125%] reserves a 4:5 tall box so the image never jumps as it loads */}
+          <div className="relative pt-[125%] overflow-hidden">
             <img
               src={product.image}
               alt={`${product.name} - ${product.material}`}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transition: 'transform 0.6s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              loading="lazy"
+              className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
             />
           </div>
-          <div style={{ padding: isMobile ? 16 : 24 }}>
-            <h3
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? 16 : 24,
-                fontWeight: 600,
-                color: 'var(--color-darker)',
-                marginBottom: isMobile ? 10 : 16,
-              }}
-            >
+          <div className="p-4 md:p-6">
+            <h3 className="font-serif text-[16px] md:text-[24px] font-semibold text-darker mb-2.5 md:mb-4">
               {product.name}
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 6 : 8 }}>
+            <div className="flex flex-col gap-1.5 md:gap-2">
               {specFields.map(({ key, label }) => (
-                <div
-                  key={key}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: isMobile ? 10 : 12,
-                      fontWeight: 600,
-                      color: 'var(--color-warm)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      flexShrink: 0,
-                    }}
-                  >
+                <div key={key} className="flex justify-between items-start gap-2">
+                  <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
                     {label}
                   </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: isMobile ? 11 : 13,
-                      color: 'var(--color-muted)',
-                      textAlign: 'right',
-                    }}
-                  >
+                  <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
                     {product[key as keyof typeof product]}
                   </span>
                 </div>
@@ -183,276 +135,103 @@ export default function Collections() {
       ))}
     </div>
   );
+}
 
+// Small helper for the "01" / "02" section headers so we don't repeat the markup.
+function CollectionHeader({ number, title, subtitle }: { number: string; title: string; subtitle: string }) {
   return (
-    <div style={{ paddingTop: isMobile ? 64 : 80 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      viewport={{ once: true, margin: '-100px' }}
+      className="mb-8 md:mb-16"
+    >
+      <div className="flex items-start md:items-center gap-4 md:gap-6 mb-4">
+        <div className="font-serif text-[48px] md:text-[72px] font-light text-warm opacity-40 leading-none shrink-0">
+          {number}
+        </div>
+        <div>
+          <h2 className="font-serif text-[24px] md:text-[clamp(36px,5vw,56px)] font-semibold text-darker leading-[1.2]">
+            {title}
+          </h2>
+          <p className="font-sans text-[13px] md:text-[16px] text-muted mt-2">{subtitle}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Collections() {
+  return (
+    <div className="pt-16 md:pt-20">
 
       {/* ── Hero ── */}
-      <section style={{ padding: isMobile ? '80px 24px 64px' : '120px 48px 96px', backgroundColor: 'var(--color-sand)' }}>
-        <motion.div {...fadeUp} style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'var(--color-warm)',
-              marginBottom: 16,
-            }}
-          >
-            Product Catalog
-          </div>
-          <h1
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '38px' : 'clamp(48px, 6vw, 84px)',
-              fontWeight: 600,
-              lineHeight: 1.1,
-              color: 'var(--color-darker)',
-              marginBottom: 24,
-            }}
-          >
+      <section className="bg-sand px-6 pt-20 pb-16 md:px-12 md:pt-30 md:pb-24">
+        <motion.div {...fadeUp} className="max-w-[1200px] mx-auto text-center">
+          <div className={`${eyebrow} mb-4`}>Product Catalog</div>
+          <h1 className="font-serif text-[38px] md:text-[clamp(48px,6vw,84px)] font-semibold leading-[1.1] text-darker mb-6">
             Our Collections
           </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 15 : 20,
-              color: 'var(--color-muted)',
-              maxWidth: 800,
-              margin: '0 auto',
-              lineHeight: 1.6,
-            }}
-          >
+          <p className="font-sans text-[15px] md:text-[20px] text-muted max-w-[800px] mx-auto leading-[1.6]">
             Explore our curated range of premium rattan furniture, designed for clients seeking quality, durability, and timeless style
           </p>
         </motion.div>
       </section>
 
       {/* ── Natural Rattan ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 32 : 64 }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: isMobile ? 'flex-start' : 'center',
-                gap: isMobile ? 16 : 24,
-                marginBottom: 16,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: isMobile ? 48 : 72,
-                  fontWeight: 300,
-                  color: 'var(--color-warm)',
-                  opacity: 0.4,
-                  lineHeight: 1,
-                  flexShrink: 0,
-                }}
-              >
-                01
-              </div>
-              <div>
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? '24px' : 'clamp(36px, 5vw, 56px)',
-                    fontWeight: 600,
-                    color: 'var(--color-darker)',
-                    lineHeight: 1.2,
-                  }}
-                >
-                  Natural Rattan Collection
-                </h2>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 16,
-                    color: 'var(--color-muted)',
-                    marginTop: 8,
-                  }}
-                >
-                  Sustainably sourced and traditionally crafted for indoor and covered applications
-                </p>
-              </div>
-            </div>
-          </motion.div>
+      <section className="px-6 py-16 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          <CollectionHeader
+            number="01"
+            title="Natural Rattan Collection"
+            subtitle="Sustainably sourced and traditionally crafted for indoor and covered applications"
+          />
           <ProductGrid products={naturalProducts} />
         </div>
       </section>
 
       {/* ── Divider ── */}
-      <div style={{ height: 1, backgroundColor: 'var(--color-dune)', margin: isMobile ? '0 24px' : '0 48px' }} />
+      <div className="h-px bg-dune mx-6 md:mx-12" />
 
       {/* ── Synthetic Rattan ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '140px 48px' }}>
-        <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            viewport={{ once: true, margin: '-100px' }}
-            style={{ marginBottom: isMobile ? 32 : 64 }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: isMobile ? 'flex-start' : 'center',
-                gap: isMobile ? 16 : 24,
-                marginBottom: 16,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: isMobile ? 48 : 72,
-                  fontWeight: 300,
-                  color: 'var(--color-warm)',
-                  opacity: 0.4,
-                  lineHeight: 1,
-                  flexShrink: 0,
-                }}
-              >
-                02
-              </div>
-              <div>
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: isMobile ? '24px' : 'clamp(36px, 5vw, 56px)',
-                    fontWeight: 600,
-                    color: 'var(--color-darker)',
-                    lineHeight: 1.2,
-                  }}
-                >
-                  Synthetic Rattan Collection
-                </h2>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 16,
-                    color: 'var(--color-muted)',
-                    marginTop: 8,
-                  }}
-                >
-                  High-performance, all-weather solutions for outdoor commercial applications
-                </p>
-              </div>
-            </div>
-          </motion.div>
+      <section className="px-6 py-16 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          <CollectionHeader
+            number="02"
+            title="Synthetic Rattan Collection"
+            subtitle="High-performance, all-weather solutions for outdoor commercial applications"
+          />
           <ProductGrid products={syntheticProducts} />
         </div>
       </section>
 
       {/* ── See More Callout ── */}
-      <section style={{ padding: isMobile ? '48px 24px' : '64px 48px', backgroundColor: 'var(--color-dune)', textAlign: 'center' }}>
+      <section className="bg-dune text-center px-6 py-12 md:px-12 md:py-16">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true }}
-          style={{ maxWidth: 800, margin: '0 auto' }}
+          className="max-w-[800px] mx-auto"
         >
-          <h3
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '24px' : 'clamp(28px, 3vw, 40px)',
-              fontWeight: 600,
-              color: 'var(--color-darker)',
-              marginBottom: 16,
-            }}
-          >
+          <h3 className="font-serif text-[24px] md:text-[clamp(28px,3vw,40px)] font-semibold text-darker mb-4">
             Looking for Custom Solutions?
           </h3>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 14 : 16,
-              color: 'var(--color-muted)',
-              marginBottom: 32,
-              lineHeight: 1.6,
-            }}
-          >
+          <p className="font-sans text-[14px] md:text-[16px] text-muted mb-8 leading-[1.6]">
             Our full catalog includes 200+ designs. Request our product catalog or discuss bespoke requirements with our team.
           </p>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: isMobile ? 'column' : 'row',
-              gap: isMobile ? 12 : 16,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center items-center">
             <Link
               to="/contact"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 12,
-                padding: isMobile ? '14px 28px' : '16px 32px',
-                width: isMobile ? '100%' : 'auto',
-                maxWidth: isMobile ? 320 : 'none',
-                backgroundColor: 'var(--color-darker)',
-                color: 'var(--color-cream)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                transition: 'all 0.3s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-dark)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-7 py-3.5 md:px-8 md:py-4 bg-darker text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark hover:-translate-y-0.5"
             >
               Request Full Catalog
               <ArrowRight size={18} />
             </Link>
             <Link
               to="/bespoke"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 12,
-                padding: isMobile ? '14px 28px' : '16px 32px',
-                width: isMobile ? '100%' : 'auto',
-                maxWidth: isMobile ? 320 : 'none',
-                border: '2px solid var(--color-darker)',
-                color: 'var(--color-darker)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                transition: 'all 0.3s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--color-darker)';
-                e.currentTarget.style.color = 'var(--color-cream)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = 'var(--color-darker)';
-              }}
+              className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-7 py-3.5 md:px-8 md:py-4 border-2 border-darker text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-darker hover:text-cream"
             >
               Explore Bespoke Services
             </Link>
@@ -461,64 +240,23 @@ export default function Collections() {
       </section>
 
       {/* ── Bottom CTA ── */}
-      <section style={{ padding: isMobile ? '64px 24px' : '96px 48px', backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)', textAlign: 'center' }}>
+      <section className="bg-darker text-cream text-center px-6 py-16 md:px-12 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true }}
-          style={{ maxWidth: 700, margin: '0 auto' }}
+          className="max-w-[700px] mx-auto"
         >
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? '28px' : 'clamp(32px, 4vw, 48px)',
-              fontWeight: 600,
-              lineHeight: 1.2,
-              marginBottom: 16,
-            }}
-          >
+          <h2 className="font-serif text-[28px] md:text-[clamp(32px,4vw,48px)] font-semibold leading-[1.2] mb-4">
             Need Volume Pricing or MOQ Information?
           </h2>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: isMobile ? 14 : 16,
-              color: 'var(--color-bark)',
-              lineHeight: 1.8,
-              marginBottom: 32,
-            }}
-          >
+          <p className="font-sans text-[14px] md:text-[16px] text-bark leading-[1.8] mb-8">
             Contact our sales team for detailed specifications, bulk pricing, and lead times
           </p>
           <Link
             to="/contact"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 12,
-              padding: isMobile ? '14px 32px' : '16px 40px',
-              width: isMobile ? '100%' : 'auto',
-              maxWidth: isMobile ? 320 : 'none',
-              backgroundColor: 'var(--color-cream)',
-              color: 'var(--color-darker)',
-              fontFamily: 'var(--font-sans)',
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-              transition: 'all 0.3s var(--ease-smooth)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-sand)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-cream)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-8 py-3.5 md:px-10 md:py-4 bg-cream text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-sand hover:-translate-y-0.5"
           >
             Contact Sales Team
             <ArrowRight size={18} />

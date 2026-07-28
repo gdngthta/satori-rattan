@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowRight, Check, Quote, ExternalLink } from 'lucide-react';
+import { ArrowRight, Check, Quote, ExternalLink, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
 import { Link } from 'react-router';
 import { fadeUp } from '../lib/animations';
 
@@ -83,6 +83,26 @@ const featuredProjects = [
   },
 ];
 
+// Our Markets — industry categories (true & generic, needs no client permission).
+// Edit titles/descriptions inside the quotes; keep the icon + field names.
+const industries = [
+  { icon: Hotel, title: 'Hospitality', description: 'Hotels, resorts, restaurants, and beach clubs seeking durable, design-forward furniture.' },
+  { icon: HomeIcon, title: 'Residential', description: 'Developers and interior designers furnishing homes, apartments, and villas.' },
+  { icon: Building2, title: 'Commercial', description: 'Offices, lobbies, and mixed-use spaces that need quality at scale.' },
+  { icon: Store, title: 'Retail', description: 'Showrooms and retail brands looking for distinctive, on-brand pieces.' },
+];
+
+// ⬇️ EDIT THIS with your REAL client brand names (only ones you're allowed to show).
+// These "Brand One/Two/…" are placeholders — replace the text inside the quotes.
+// Add or remove lines to change how many show. (Text names for now; logo images later.)
+const clients = [
+  'Brand One',
+  'Brand Two',
+  'Brand Three',
+  'Brand Four',
+  'Brand Five',
+];
+
 // Reused warm "eyebrow" label above section titles.
 const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-4';
 
@@ -162,6 +182,70 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* ── Who We Serve (Industries) ── */}
+      <section className="px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            viewport={{ once: true, margin: '-100px' }}
+            className="text-center mb-10 md:mb-16"
+          >
+            <div className={eyebrow}>Our Markets</div>
+            <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
+              Industries We Serve
+            </h2>
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[640px] mx-auto leading-[1.6]">
+              From five-star hospitality to large-scale residential developments, we partner with brands across every corner of the furniture market.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-4">
+            {industries.map((ind, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+                viewport={{ once: true, margin: '-100px' }}
+                className="p-6 md:p-10 bg-sand border border-dune text-center transition-all duration-300 ease-smooth hover:-translate-y-1 hover:border-warm"
+              >
+                <ind.icon className="w-8 h-8 md:w-10 md:h-10 text-warm mx-auto mb-4 md:mb-6" />
+                <h3 className="font-serif text-[18px] md:text-[22px] font-semibold text-darker mb-2">
+                  {ind.title}
+                </h3>
+                <p className="font-sans text-[13px] md:text-[14px] text-muted leading-[1.6]">
+                  {ind.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trusted By (specific brands) — edit the `clients` list above ── */}
+      <section className="bg-sand px-6 py-12 md:px-12 md:py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          viewport={{ once: true, margin: '-100px' }}
+          className="max-w-[1440px] mx-auto text-center"
+        >
+          <div className="font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-8">
+            Who We Serve
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-5 md:gap-x-16">
+            {clients.map((name, i) => (
+              <span key={i} className="font-serif text-[20px] md:text-[28px] font-medium text-muted">
+                {name}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
       {/* ── Featured Products ── */}
       <section className="px-6 py-20 md:px-12 md:py-[140px]">
         <div className="max-w-[1440px] mx-auto">
@@ -219,21 +303,6 @@ export default function Home() {
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            viewport={{ once: true }}
-            className="mt-10 md:mt-16 text-center"
-          >
-            <Link
-              to="/projects"
-              className="inline-flex items-center gap-3 px-7 py-3.5 md:px-10 md:py-4 border-2 border-darker text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-darker hover:text-cream"
-            >
-              View All Projects
-              <ArrowRight size={18} />
-            </Link>
-          </motion.div>
         </div>
       </section>
 

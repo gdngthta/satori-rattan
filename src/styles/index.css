@@ -44,18 +44,6 @@
   }
 }
 
-/* Temporary mobile fallback for pages NOT yet migrated to Tailwind.
-   Stays un-layered on purpose (needs !important to beat their inline styles).
-   ponytail: delete this whole block once every page uses Tailwind classes. */
-@media (max-width: 768px) {
-  [style*="gridTemplateColumns: '1fr 2fr'"],
-  [style*="gridTemplateColumns: '2fr 1fr'"],
-  [style*="gridTemplateColumns: '1fr 1fr'"],
-  [style*="gridTemplateColumns: 'repeat(2, 1fr)'"] {
-    grid-template-columns: 1fr !important;
-  }
-}
-
 @keyframes ticker {
   from {
     transform: translateX(0);

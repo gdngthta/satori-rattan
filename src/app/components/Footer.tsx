@@ -1,6 +1,5 @@
 import { Link } from 'react-router';
 import { Mail, Phone, MapPin, Instagram } from 'lucide-react';
-import { useIsMobile } from '../hooks/useWindowSize';
 
 const footerLinks = {
   company: [
@@ -26,80 +25,35 @@ const services = [
   'Global Logistics Support',
 ];
 
-export default function Footer() {
-  const isMobile = useIsMobile();
+// Reused column-heading style.
+const colHeading = 'font-sans text-[12px] font-semibold tracking-[0.1em] uppercase text-warm mb-5';
+const footerLink = 'font-sans text-[13px] md:text-[14px] text-bark transition-colors duration-200 ease-smooth hover:text-cream';
 
+export default function Footer() {
   return (
-    <footer style={{ backgroundColor: 'var(--color-darker)', color: 'var(--color-cream)' }}>
-      <div
-        style={{
-          maxWidth: 1440,
-          margin: '0 auto',
-          padding: isMobile ? '64px 24px 32px' : '96px 48px 48px',
-        }}
-      >
+    <footer className="bg-darker text-cream">
+      <div className="max-w-[1440px] mx-auto px-6 pt-16 pb-8 md:px-12 md:pt-24 md:pb-12">
+
         {/* Main Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: isMobile ? 40 : 64,
-            marginBottom: isMobile ? 48 : 64,
-          }}
-        >
-          {/* Brand Column - full width on mobile */}
-          <div style={{ gridColumn: isMobile ? '1 / -1' : 'auto' }}>
-            <div
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: isMobile ? 24 : 28,
-                fontWeight: 600,
-                marginBottom: 16,
-                color: 'var(--color-cream)',
-              }}
-            >
+        <div className="grid grid-cols-2 gap-10 md:gap-16 mb-12 md:mb-16 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+
+          {/* Brand column — full width on phone (spans both columns) */}
+          <div className="col-span-2 md:col-auto">
+            <div className="font-serif text-[24px] md:text-[28px] font-semibold text-cream mb-4">
               Satori Rattan
             </div>
-            <p
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 14,
-                color: 'var(--color-bark)',
-                lineHeight: 1.8,
-                marginBottom: 24,
-                maxWidth: isMobile ? '100%' : 280,
-              }}
-            >
+            <p className="font-sans text-[14px] text-bark leading-[1.8] mb-6 max-w-full md:max-w-[280px]">
               Premium rattan furniture manufacturer serving hospitality, residential, and commercial projects worldwide since 2014.
             </p>
 
-            {/* Instagram */}
-            <div style={{ display: 'flex', gap: 12 }}>
+            {/* Instagram — icon inherits the link's text color (warm, flips on hover) */}
+            <div className="flex gap-3">
               <a
                 href="https://instagram.com/satori.rattan"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Instagram"
-                style={{
-                  width: 40,
-                  height: 40,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1px solid var(--color-warm)',
-                  color: 'var(--color-warm)',
-                  transition: 'all 0.3s var(--ease-smooth)',
-                  textDecoration: 'none',
-                  flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-warm)';
-                  e.currentTarget.style.color = 'var(--color-darker)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = 'var(--color-warm)';
-                }}
+                className="w-10 h-10 flex items-center justify-center border border-warm text-warm shrink-0 transition-all duration-300 ease-smooth hover:bg-warm hover:text-darker"
               >
                 <Instagram size={18} />
               </a>
@@ -108,36 +62,12 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-warm)',
-                marginBottom: 20,
-              }}
-            >
-              Company
-            </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12, padding: 0, margin: 0 }}>
+            <h3 className={colHeading}>Company</h3>
+            <ul className="list-none flex flex-col gap-3 p-0 m-0">
               {footerLinks.company.map((link) => (
                 // key must be unique; several links share the same path, so key on the label
                 <li key={link.label}>
-                  <Link
-                    to={link.path}
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: isMobile ? 13 : 14,
-                      color: 'var(--color-bark)',
-                      transition: 'color 0.2s var(--ease-smooth)',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-bark)')}
-                  >
-                    {link.label}
-                  </Link>
+                  <Link to={link.path} className={footerLink}>{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -145,62 +75,23 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-warm)',
-                marginBottom: 20,
-              }}
-            >
-              Services
-            </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8, padding: 0, margin: 0 }}>
+            <h3 className={colHeading}>Services</h3>
+            <ul className="list-none flex flex-col gap-2 p-0 m-0">
               {services.map((service, i) => (
-                <li
-                  key={i}
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 14,
-                    color: 'var(--color-bark)',
-                    lineHeight: 1.6,
-                  }}
-                >
+                <li key={i} className="font-sans text-[13px] md:text-[14px] text-bark leading-[1.6]">
                   {service}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact Info - full width on mobile */}
-          <div style={{ gridColumn: isMobile ? '1 / -1' : 'auto' }}>
-            <h3
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-warm)',
-                marginBottom: 20,
-              }}
-            >
-              Contact
-            </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 16, padding: 0, margin: 0 }}>
-              <li style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                <MapPin size={18} style={{ color: 'var(--color-warm)', flexShrink: 0, marginTop: 2 }} />
-                <span
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 14,
-                    color: 'var(--color-bark)',
-                    lineHeight: 1.6,
-                  }}
-                >
+          {/* Contact Info — full width on phone */}
+          <div className="col-span-2 md:col-auto">
+            <h3 className={colHeading}>Contact</h3>
+            <ul className="list-none flex flex-col gap-4 p-0 m-0">
+              <li className="flex gap-3 items-start">
+                <MapPin size={18} className="text-warm shrink-0 mt-0.5" />
+                <span className="font-sans text-[13px] md:text-[14px] text-bark leading-[1.6]">
                   Jl. Suryadinata no. 6 Desa Marikangen
                   <br />
                   Kecamatan Plumbon, Kabupaten Cirebon
@@ -208,36 +99,13 @@ export default function Footer() {
                   West Java 45155, Indonesia
                 </span>
               </li>
-              <li style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                <Phone size={18} style={{ color: 'var(--color-warm)', flexShrink: 0 }} />
-                <a
-                  href="tel:+622318765432"
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 14,
-                    color: 'var(--color-bark)',
-                    transition: 'color 0.2s var(--ease-smooth)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-bark)')}
-                >
-                  +62 231 876 5432
-                </a>
+              <li className="flex gap-3 items-center">
+                <Phone size={18} className="text-warm shrink-0" />
+                <a href="tel:+622318765432" className={footerLink}>+62 231 876 5432</a>
               </li>
-              <li style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                <Mail size={18} style={{ color: 'var(--color-warm)', flexShrink: 0 }} />
-                <a
-                  href="mailto:info@satorirattan.com"
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: isMobile ? 13 : 14,
-                    color: 'var(--color-bark)',
-                    transition: 'color 0.2s var(--ease-smooth)',
-                    wordBreak: 'break-all',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-bark)')}
-                >
+              <li className="flex gap-3 items-center">
+                <Mail size={18} className="text-warm shrink-0" />
+                <a href="mailto:info@satorirattan.com" className={`${footerLink} break-all`}>
                   info@satorirattan.com
                 </a>
               </li>
@@ -246,52 +114,15 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div
-          style={{
-            paddingTop: 32,
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            justifyContent: 'space-between',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            gap: isMobile ? 12 : 16,
-          }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 13,
-              color: 'var(--color-muted)',
-              margin: 0,
-            }}
-          >
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
+          <p className="font-sans text-[13px] text-muted">
             © {new Date().getFullYear()} Satori Rattan. All rights reserved.
           </p>
-          <div style={{ display: 'flex', gap: isMobile ? 16 : 24 }}>
-            <a
-              href="#"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--color-muted)',
-                transition: 'color 0.2s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-muted)')}
-            >
+          <div className="flex gap-4 md:gap-6">
+            <a href="#" className="font-sans text-[13px] text-muted transition-colors duration-200 ease-smooth hover:text-cream">
               Privacy Policy
             </a>
-            <a
-              href="#"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 13,
-                color: 'var(--color-muted)',
-                transition: 'color 0.2s var(--ease-smooth)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-cream)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-muted)')}
-            >
+            <a href="#" className="font-sans text-[13px] text-muted transition-colors duration-200 ease-smooth hover:text-cream">
               Terms of Service
             </a>
           </div>

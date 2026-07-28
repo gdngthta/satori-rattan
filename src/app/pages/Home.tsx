@@ -92,15 +92,26 @@ const industries = [
   { icon: Store, title: 'Retail', description: 'Showrooms and retail brands looking for distinctive, on-brand pieces.' },
 ];
 
-// ⬇️ EDIT THIS with your REAL client brand names (only ones you're allowed to show).
-// These "Brand One/Two/…" are placeholders — replace the text inside the quotes.
-// Add or remove lines to change how many show. (Text names for now; logo images later.)
+// Draws a self-contained placeholder logo box (no internet needed) so you can
+// SEE the layout. Uses the brand's dune/warm colors. Delete this once you have
+// real logos.
+const placeholderLogo = (label: string) =>
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="90"><rect width="220" height="90" fill="#eae5de"/><text x="110" y="52" font-family="Georgia, serif" font-size="22" fill="#8b7969" text-anchor="middle">${label}</text></svg>`
+  );
+
+// ⬇️ EDIT THIS with your REAL clients (only brands you're allowed to show).
+//   name = the brand name (also used as the image's alt text for accessibility).
+//   logo = placeholder for now. For a REAL logo: drop the file in public/images/
+//          and change logo to the path, e.g. logo: '/images/brand-logo.png'.
+// Add or remove lines to change how many show.
 const clients = [
-  'Brand One',
-  'Brand Two',
-  'Brand Three',
-  'Brand Four',
-  'Brand Five',
+  { name: 'Brand One',   logo: placeholderLogo('Brand One') },
+  { name: 'Brand Two',   logo: placeholderLogo('Brand Two') },
+  { name: 'Brand Three', logo: placeholderLogo('Brand Three') },
+  { name: 'Brand Four',  logo: placeholderLogo('Brand Four') },
+  { name: 'Brand Five',  logo: placeholderLogo('Brand Five') },
 ];
 
 // Reused warm "eyebrow" label above section titles.
@@ -236,11 +247,14 @@ export default function Home() {
           <div className="font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-8">
             Who We Serve
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-5 md:gap-x-16">
-            {clients.map((name, i) => (
-              <span key={i} className="font-serif text-[20px] md:text-[28px] font-medium text-muted">
-                {name}
-              </span>
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 md:gap-x-16">
+            {clients.map((client, i) => (
+              <img
+                key={i}
+                src={client.logo}
+                alt={client.name}
+                className="h-10 md:h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 ease-smooth"
+              />
             ))}
           </div>
         </motion.div>

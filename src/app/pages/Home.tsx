@@ -109,8 +109,8 @@ const placeholderLogo = (label: string) =>
 // Add or remove lines to change how many show.
 const clients = [
   { name: 'Muji',        logo: '/images/brands/muji.webp' },   // ← real logo
-  { name: 'Brand Two',   logo: placeholderLogo('Brand Two') }, // ← still placeholders
-  { name: 'Brand Three', logo: placeholderLogo('Brand Three') },
+  { name: 'Unsoed',      logo: '/images/brands/unsoed.webp' }, // ← real logo
+  { name: 'MBG',         logo: '/images/brands/mbg.png' },    // ← real logo
   { name: 'Brand Four',  logo: placeholderLogo('Brand Four') },
   { name: 'Brand Five',  logo: placeholderLogo('Brand Five') },
 ];

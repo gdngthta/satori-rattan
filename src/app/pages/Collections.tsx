@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
@@ -7,9 +8,25 @@ import { fadeUp } from '../lib/animations';
 //  PRODUCT DATA — this is the part you edit to add/change/remove products.
 //  Each { ... } block is ONE product card. Copy a whole block to add another.
 //  Keep the field names (name, image, dimensions, ...) exactly as they are.
+//
+//  COLOR OPTIONS (optional): add a `colors` list to a product to show clickable
+//  color dots that swap the photo. Products WITHOUT `colors` just show one image.
+//    swatch = the dot's color (hex).    image = the photo shown for that color.
 // ═══════════════════════════════════════════════════════════════════════════
 
-const naturalProducts = [
+type ColorVariant = { name: string; swatch: string; image: string };
+
+type Product = {
+  name: string;
+  image: string;           // default photo (used when there are no color options)
+  dimensions: string;
+  material: string;
+  customizable: string;
+  leadTime: string;
+  colors?: ColorVariant[]; // optional — leave it off for single-photo products
+};
+
+const naturalProducts: Product[] = [
   {
     name: 'Lombok Lounge Chair',
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=700&fit=crop',
@@ -17,6 +34,15 @@ const naturalProducts = [
     material: 'Natural Rattan Core',
     customizable: 'Yes',
     leadTime: '8-10 weeks',
+    // ⬇️ DEMO color options (stand-in photos so you can see it work).
+    //    Replace each `image` with your REAL color-variant photo, and set the
+    //    `swatch` hex + `name` to match. Delete this whole `colors` block for
+    //    products that only come in one color.
+    colors: [
+      { name: 'Natural',  swatch: '#d4c5b9', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=700&fit=crop' },
+      { name: 'Charcoal', swatch: '#2c2926', image: 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=600&h=700&fit=crop' },
+      { name: 'Sand',     swatch: '#e6ddd1', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=700&fit=crop' },
+    ],
   },
   {
     name: 'Java Dining Set',
@@ -44,7 +70,7 @@ const naturalProducts = [
   },
 ];
 
-const syntheticProducts = [
+const syntheticProducts: Product[] = [
   {
     name: 'Marina Outdoor Sofa',
     image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&h=700&fit=crop',
@@ -81,7 +107,7 @@ const syntheticProducts = [
 
 // The rows shown inside every product card. Edit a label here -> it changes on
 // every card at once (that's why it's written once, not per card).
-const specFields = [
+const specFields: { key: 'dimensions' | 'material' | 'customizable' | 'leadTime'; label: string }[] = [
   { key: 'dimensions', label: 'Dimensions' },
   { key: 'material', label: 'Material' },
   { key: 'customizable', label: 'Customizable' },
@@ -91,47 +117,80 @@ const specFields = [
 // Reused Tailwind label strings (no-prefix = phone, md: = desktop >= 768px).
 const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm';
 
-// One product card grid. Reused for both the Natural and Synthetic lists.
-function ProductGrid({ products }: { products: typeof naturalProducts }) {
+// One product card. Keeps its own "which color is selected" state so clicking a
+// dot swaps only THIS card's photo. Cards without `colors` show no dots.
+function ProductCard({ product, index }: { product: Product; index: number }) {
+  const [selected, setSelected] = useState(0);
+  const hasColors = !!product.colors && product.colors.length > 0;
+  // show the selected color's photo, or the default photo if there are no colors
+  const activeImage = hasColors ? product.colors![selected].image : product.image;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
+      viewport={{ once: true, margin: '-100px' }}
+      // "group" lets the image react when the whole card is hovered.
+      className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
+    >
+      {/* pt-[125%] reserves a 4:5 tall box so the image never jumps as it loads */}
+      <div className="relative pt-[125%] overflow-hidden">
+        <img
+          src={activeImage}
+          alt={`${product.name} - ${product.material}`}
+          loading="lazy"
+          className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
+        />
+      </div>
+      <div className="p-4 md:p-6">
+        <h3 className="font-serif text-[16px] md:text-[24px] font-semibold text-darker mb-2.5 md:mb-4">
+          {product.name}
+        </h3>
+
+        {/* Color dots — only rendered when the product has a `colors` list */}
+        {hasColors && (
+          <div className="flex items-center gap-2 mb-3 md:mb-4">
+            {product.colors!.map((c, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setSelected(i)}
+                aria-label={c.name}
+                title={c.name}
+                // selected dot gets a warm ring; swatch color is dynamic -> inline style
+                className={`h-5 w-5 rounded-full border border-dune transition-all ${
+                  i === selected ? 'ring-2 ring-warm ring-offset-1 ring-offset-sand' : ''
+                }`}
+                style={{ backgroundColor: c.swatch }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1.5 md:gap-2">
+          {specFields.map(({ key, label }) => (
+            <div key={key} className="flex justify-between items-start gap-2">
+              <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
+                {label}
+              </span>
+              <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
+                {product[key]}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Product card grid. Reused for both the Natural and Synthetic lists.
+function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
       {products.map((product, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
-          viewport={{ once: true, margin: '-100px' }}
-          // "group" lets the image react when the whole card is hovered.
-          className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
-        >
-          {/* pt-[125%] reserves a 4:5 tall box so the image never jumps as it loads */}
-          <div className="relative pt-[125%] overflow-hidden">
-            <img
-              src={product.image}
-              alt={`${product.name} - ${product.material}`}
-              loading="lazy"
-              className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
-            />
-          </div>
-          <div className="p-4 md:p-6">
-            <h3 className="font-serif text-[16px] md:text-[24px] font-semibold text-darker mb-2.5 md:mb-4">
-              {product.name}
-            </h3>
-            <div className="flex flex-col gap-1.5 md:gap-2">
-              {specFields.map(({ key, label }) => (
-                <div key={key} className="flex justify-between items-start gap-2">
-                  <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
-                    {label}
-                  </span>
-                  <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
-                    {product[key as keyof typeof product]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        <ProductCard key={i} product={product} index={i} />
       ))}
     </div>
   );

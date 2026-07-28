@@ -103,12 +103,13 @@ const placeholderLogo = (label: string) =>
 
 // ⬇️ EDIT THIS with your REAL clients (only brands you're allowed to show).
 //   name = the brand name (also used as the image's alt text for accessibility).
-//   logo = placeholder for now. For a REAL logo: drop the file in public/images/
-//          and change logo to the path, e.g. logo: '/images/brand-logo.png'.
+//   logo = a real file path OR a placeholder box.
+//   For a REAL logo: put the file in public/images/brands/ and point to it,
+//   e.g. logo: '/images/brands/muji.webp'  (SVG/WebP/PNG all work).
 // Add or remove lines to change how many show.
 const clients = [
-  { name: 'Brand One',   logo: placeholderLogo('Brand One') },
-  { name: 'Brand Two',   logo: placeholderLogo('Brand Two') },
+  { name: 'Muji',        logo: '/images/brands/muji.webp' },   // ← real logo
+  { name: 'Brand Two',   logo: placeholderLogo('Brand Two') }, // ← still placeholders
   { name: 'Brand Three', logo: placeholderLogo('Brand Three') },
   { name: 'Brand Four',  logo: placeholderLogo('Brand Four') },
   { name: 'Brand Five',  logo: placeholderLogo('Brand Five') },

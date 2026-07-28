@@ -70,7 +70,7 @@ export default function About() {
       <section className="relative h-[60vh] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/Hero-About.jpg"
+            src="/images/pages/Hero-About.jpg"
             alt="Satori Rattan headquarters and manufacturing facility in Cirebon, Indonesia"
             className="w-full h-full object-cover"
           />

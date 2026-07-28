@@ -56,21 +56,21 @@ const featuredProjects = [
   {
     name: 'Kolot Chair',
     location: 'Manao rattan skin off with leather binded.',
-    image: '/images/Crown-Chair-WarmBeige.png',
+    image: '/images/products/Crown-Chair-WarmBeige.png',
     category: 'Lounge',
     link: 'https://urbanquarter.com/indonesian/memilih-furniture-untuk-menciptakan-rumah-yang-nyaman-dari-toko-furnitur-jakarta-selatan/',
   },
   {
     name: 'Canari',
     location: 'Carbon steel powder coated / Polyethylene weave',
-    image: '/images/Canari-Chair.png',
+    image: '/images/products/Canari-Chair.png',
     category: 'Dining',
     link: 'https://www.berkeleygroup.co.uk/',
   },
   {
     name: 'Man O',
     location: 'Carbon steel powder coated / Rattan core weave.',
-    image: '/images/Glass-Chair.jpg',
+    image: '/images/products/Glass-Chair.jpg',
     category: 'Lounge',
     link: 'https://www.scorpiosmusic.com/',
   },
@@ -125,7 +125,7 @@ export default function Home() {
       <section className="relative h-[70vh] md:h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/Hero-Picture.jpg"
+            src="/images/pages/Hero-Picture.jpg"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
             className="w-full h-full object-cover"
           />
@@ -451,7 +451,7 @@ export default function Home() {
             >
               <div className="relative pt-[80%] md:pt-[125%] overflow-hidden">
                 <img
-                  src="/images/Master-Craftmanship.png"
+                  src="/images/pages/Master-Craftmanship.png"
                   alt="Skilled artisan weaving rattan furniture by hand"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-[86.8%] object-cover"

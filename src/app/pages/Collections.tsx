@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router';
+import emailjs from '@emailjs/browser';
 import { fadeUp } from '../lib/animations';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -221,6 +222,105 @@ function CollectionHeader({ number, title, subtitle }: { number: string; title: 
   );
 }
 
+// Soft gate: a short form that emails us the request (reuses the same EmailJS
+// setup as the Contact page). Catalog stays visible; this just captures leads.
+function CatalogRequest() {
+  const [form, setForm] = useState({ name: '', company: '', email: '', interest: '' });
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const submissionTime = new Date().toLocaleString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
+    });
+    try {
+      // Same EmailJS service/template as the Contact form — lands in the same inbox.
+      emailjs.init('pW1vDoZIFag3A6sY3');
+      await emailjs.send('service_athfx8e', 'template_rz0s4di', {
+        company_name: form.company,
+        from_name: form.name,
+        reply_to: form.email,
+        phone: 'Not provided',
+        project_type: 'Full Catalog Request',
+        quantity: 'Not specified',
+        budget: 'Not specified',
+        message: form.interest || 'Requested the full product catalog.',
+        submission_time: submissionTime,
+      });
+      setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Please try again, or email us at info@satorirattan.com.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Thank-you state (shown after a successful send) ──
+  if (submitted) {
+    return (
+      <div className="max-w-[560px] mx-auto text-center">
+        <CheckCircle2 className="w-12 h-12 md:w-14 md:h-14 text-warm mx-auto mb-5" />
+        <h3 className="font-serif text-[24px] md:text-[32px] font-semibold text-darker mb-3">Thank You!</h3>
+        <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.7]">
+          We've received your request. Our team will email you the full catalog and a tailored quotation — expect to hear from us within <strong>3 working days</strong>.
+        </p>
+      </div>
+    );
+  }
+
+  const inputCls =
+    'w-full px-3.5 py-2.5 md:px-4 md:py-3 font-sans text-[14px] border border-dune bg-cream text-darker focus:border-warm';
+
+  return (
+    <div className="max-w-[560px] mx-auto text-center">
+      <h3 className="font-serif text-[24px] md:text-[clamp(28px,3vw,40px)] font-semibold text-darker mb-4">
+        Request the Full Catalog
+      </h3>
+      <p className="font-sans text-[14px] md:text-[16px] text-muted mb-8 leading-[1.6]">
+        See our complete range of 200+ designs. Share your details and we'll email you the full catalog and a tailored quotation.
+      </p>
+
+      {error && (
+        <div className="mb-4 p-3 bg-[#fee] border border-[#fcc] rounded font-sans text-[13px] text-[#c00]">{error}</div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:gap-4 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+          <div>
+            <label htmlFor="cat_name" className="sr-only">Your Name</label>
+            <input id="cat_name" type="text" required autoComplete="name" placeholder="Your Name *"
+              value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} />
+          </div>
+          <div>
+            <label htmlFor="cat_company" className="sr-only">Company</label>
+            <input id="cat_company" type="text" required autoComplete="organization" placeholder="Company *"
+              value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={inputCls} />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="cat_email" className="sr-only">Work Email</label>
+          <input id="cat_email" type="email" required autoComplete="email" placeholder="Work Email *"
+            value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
+        </div>
+        <div>
+          <label htmlFor="cat_interest" className="sr-only">What are you looking for?</label>
+          <textarea id="cat_interest" rows={3} placeholder="What are you looking for? (optional)"
+            value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })} className={`${inputCls} resize-y`} />
+        </div>
+        <button type="submit" disabled={loading}
+          className="mt-1 w-full md:w-auto md:self-center px-8 py-3.5 md:px-12 md:py-4 bg-darker text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark disabled:bg-muted disabled:opacity-70 disabled:cursor-not-allowed">
+          {loading ? 'Sending...' : 'Request Catalog'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
 export default function Collections() {
   return (
     <div className="pt-16 md:pt-20">
@@ -265,36 +365,15 @@ export default function Collections() {
         </div>
       </section>
 
-      {/* ── See More Callout ── */}
-      <section className="bg-dune text-center px-6 py-12 md:px-12 md:py-16">
+      {/* ── Request Full Catalog (soft gate → emails us via EmailJS) ── */}
+      <section className="bg-dune px-6 py-14 md:px-12 md:py-20">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           viewport={{ once: true }}
-          className="max-w-[800px] mx-auto"
         >
-          <h3 className="font-serif text-[24px] md:text-[clamp(28px,3vw,40px)] font-semibold text-darker mb-4">
-            Looking for Custom Solutions?
-          </h3>
-          <p className="font-sans text-[14px] md:text-[16px] text-muted mb-8 leading-[1.6]">
-            Our full catalog includes 200+ designs. Request our product catalog or discuss bespoke requirements with our team.
-          </p>
-          <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center items-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-7 py-3.5 md:px-8 md:py-4 bg-darker text-cream font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark hover:-translate-y-0.5"
-            >
-              Request Full Catalog
-              <ArrowRight size={18} />
-            </Link>
-            <Link
-              to="/bespoke"
-              className="inline-flex items-center justify-center gap-3 w-full md:w-auto max-w-[320px] md:max-w-none px-7 py-3.5 md:px-8 md:py-4 border-2 border-darker text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-darker hover:text-cream"
-            >
-              Explore Bespoke Services
-            </Link>
-          </div>
+          <CatalogRequest />
         </motion.div>
       </section>
 

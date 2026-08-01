@@ -25,6 +25,8 @@ type Product = {
   customizable: string;
   leadTime: string;
   colors?: ColorVariant[]; // optional — leave it off for single-photo products
+  wide?: boolean;          // optional — set true for wide items (dining sets, sofas).
+                           // The card spans 2 columns and uses a landscape photo.
 };
 
 const naturalProducts: Product[] = [
@@ -47,11 +49,13 @@ const naturalProducts: Product[] = [
   },
   {
     name: 'Java Dining Set',
-    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&h=700&fit=crop',
+    // landscape crop for the wide card (replace with your real wide set photo)
+    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=1000&h=560&fit=crop',
     dimensions: 'Table: Ø 140cm × H 75cm',
     material: 'Premium Rattan Peel',
     customizable: 'Yes',
     leadTime: '10-12 weeks',
+    wide: true, // ← wide card: spans 2 columns with a landscape photo (good for sets)
   },
   {
     name: 'Bali Daybed',
@@ -123,6 +127,7 @@ const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase
 function ProductCard({ product, index }: { product: Product; index: number }) {
   const [selected, setSelected] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
+  const wide = !!product.wide;
   // show the selected color's photo, or the default photo if there are no colors
   const activeImage = hasColors ? product.colors![selected].image : product.image;
 
@@ -133,10 +138,11 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
       viewport={{ once: true, margin: '-100px' }}
       // "group" lets the image react when the whole card is hovered.
-      className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
+      // wide products span 2 grid columns (col-span-2) so a set fits in landscape.
+      className={`group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1 ${wide ? 'col-span-2' : ''}`}
     >
-      {/* pt-[125%] reserves a 4:5 tall box so the image never jumps as it loads */}
-      <div className="relative pt-[125%] overflow-hidden">
+      {/* Aspect box: tall 4:5 for normal cards, short landscape for wide ones */}
+      <div className={`relative overflow-hidden ${wide ? 'pt-[50%]' : 'pt-[125%]'}`}>
         <img
           src={activeImage}
           alt={`${product.name} - ${product.material}`}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2, X, Maximize2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 import emailjs from '@emailjs/browser';
 import { fadeUp } from '../lib/animations';
@@ -270,13 +270,36 @@ function ProductModal({
           <X size={20} />
         </button>
 
-        {/* Image — object-contain shows the entire photo. Thumbnails switch angles. */}
+        {/* Image with ‹ › arrows; small thumbnails below that enlarge on hover */}
         <div className="md:w-3/5 bg-sand flex flex-col gap-3 p-4 md:p-6">
-          <img
-            src={image}
-            alt={`${product.name} - ${product.material}`}
-            className="w-full flex-1 min-h-0 max-h-[38vh] md:max-h-[72vh] object-contain"
-          />
+          <div className="relative flex-1 min-h-0 flex items-center justify-center">
+            <img
+              src={image}
+              alt={`${product.name} - ${product.material}`}
+              className="w-full max-h-[38vh] md:max-h-[72vh] object-contain"
+            />
+            {gallery && gallery.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Previous photo"
+                  onClick={() => setImgIndex((imgIndex - 1 + gallery.length) % gallery.length)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-[rgba(254,253,251,0.9)] text-darker shadow-sm transition-colors hover:bg-cream"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next photo"
+                  onClick={() => setImgIndex((imgIndex + 1) % gallery.length)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-[rgba(254,253,251,0.9)] text-darker shadow-sm transition-colors hover:bg-cream"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
+          </div>
+
           {gallery && gallery.length > 1 && (
             <div className="flex gap-2 justify-center flex-wrap">
               {gallery.map((img, i) => (
@@ -285,7 +308,8 @@ function ProductModal({
                   type="button"
                   onClick={() => setImgIndex(i)}
                   aria-label={`View angle ${i + 1}`}
-                  className={`w-14 h-14 md:w-16 md:h-16 overflow-hidden border transition-all ${
+                  // small by default; pops bigger on hover (z-10 so it sits on top)
+                  className={`relative w-9 h-9 md:w-10 md:h-10 overflow-hidden border transition-transform duration-200 hover:scale-150 hover:z-10 ${
                     i === imgIndex ? 'border-warm ring-1 ring-warm' : 'border-dune opacity-70 hover:opacity-100'
                   }`}
                 >

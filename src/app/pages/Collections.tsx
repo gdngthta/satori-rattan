@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, X, Maximize2 } from 'lucide-react';
 import { Link } from 'react-router';
 import emailjs from '@emailjs/browser';
 import { fadeUp } from '../lib/animations';
@@ -25,8 +25,6 @@ type Product = {
   customizable: string;
   leadTime: string;
   colors?: ColorVariant[]; // optional — leave it off for single-photo products
-  wide?: boolean;          // optional — set true for wide items (dining sets, sofas).
-                           // The card spans 2 columns and uses a landscape photo.
 };
 
 const naturalProducts: Product[] = [
@@ -49,13 +47,11 @@ const naturalProducts: Product[] = [
   },
   {
     name: 'Java Dining Set',
-    // landscape crop for the wide card (replace with your real wide set photo)
-    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=1000&h=560&fit=crop',
+    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&h=700&fit=crop',
     dimensions: 'Table: Ø 140cm × H 75cm',
     material: 'Premium Rattan Peel',
     customizable: 'Yes',
     leadTime: '10-12 weeks',
-    wide: true, // ← wide card: spans 2 columns with a landscape photo (good for sets)
   },
   {
     name: 'Bali Daybed',
@@ -122,13 +118,19 @@ const specFields: { key: 'dimensions' | 'material' | 'customizable' | 'leadTime'
 // Reused Tailwind label strings (no-prefix = phone, md: = desktop >= 768px).
 const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm';
 
-// One product card. Keeps its own "which color is selected" state so clicking a
-// dot swaps only THIS card's photo. Cards without `colors` show no dots.
-function ProductCard({ product, index }: { product: Product; index: number }) {
+// One product card. Its color dots still swap the thumbnail; clicking the PHOTO
+// opens the full quick-view modal (good for wide sets that don't fit a card).
+function ProductCard({
+  product,
+  index,
+  onOpen,
+}: {
+  product: Product;
+  index: number;
+  onOpen: (colorIndex: number) => void;
+}) {
   const [selected, setSelected] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
-  const wide = !!product.wide;
-  // show the selected color's photo, or the default photo if there are no colors
   const activeImage = hasColors ? product.colors![selected].image : product.image;
 
   return (
@@ -137,19 +139,27 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
       viewport={{ once: true, margin: '-100px' }}
-      // "group" lets the image react when the whole card is hovered.
-      // wide products span 2 grid columns (col-span-2) so a set fits in landscape.
-      className={`group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1 ${wide ? 'col-span-2' : ''}`}
+      className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
     >
-      {/* Aspect box: tall 4:5 for normal cards, short landscape for wide ones */}
-      <div className={`relative overflow-hidden ${wide ? 'pt-[50%]' : 'pt-[125%]'}`}>
+      {/* Clicking the photo opens the quick-view. pt-[125%] keeps the 4:5 box. */}
+      <button
+        type="button"
+        onClick={() => onOpen(selected)}
+        aria-label={`View ${product.name}`}
+        className="relative block w-full pt-[125%] overflow-hidden cursor-pointer"
+      >
         <img
           src={activeImage}
           alt={`${product.name} - ${product.material}`}
           loading="lazy"
           className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
         />
-      </div>
+        {/* hover hint that the card is clickable */}
+        <span className="absolute top-3 right-3 w-8 h-8 bg-[rgba(254,253,251,0.95)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-smooth">
+          <Maximize2 size={14} className="text-darker" />
+        </span>
+      </button>
+
       <div className="p-4 md:p-6">
         <h3 className="font-serif text-[16px] md:text-[24px] font-semibold text-darker mb-2.5 md:mb-4">
           {product.name}
@@ -165,7 +175,6 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                 onClick={() => setSelected(i)}
                 aria-label={c.name}
                 title={c.name}
-                // selected dot gets a warm ring; swatch color is dynamic -> inline style
                 className={`h-5 w-5 rounded-full border border-dune transition-all ${
                   i === selected ? 'ring-2 ring-warm ring-offset-1 ring-offset-sand' : ''
                 }`}
@@ -192,14 +201,156 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   );
 }
 
-// Product card grid. Reused for both the Natural and Synthetic lists.
-function ProductGrid({ products }: { products: Product[] }) {
+// Quick-view modal: shows the WHOLE product photo (object-contain = no cropping,
+// so wide sets fit) plus specs and colors. Closes on X, backdrop click, or Esc.
+function ProductModal({
+  product,
+  initialColor,
+  onClose,
+}: {
+  product: Product;
+  initialColor: number;
+  onClose: () => void;
+}) {
+  const [color, setColor] = useState(initialColor);
+  const hasColors = !!product.colors && product.colors.length > 0;
+  const image = hasColors ? product.colors![color].image : product.image;
+
+  // Esc to close + lock the background from scrolling while the modal is open
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
   return (
-    <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-      {products.map((product, i) => (
-        <ProductCard key={i} product={product} index={i} />
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={product.name}
+      className="fixed inset-0 z-[1200] bg-black/60 flex items-center justify-center p-4 md:p-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+        onClick={(e) => e.stopPropagation()} // clicks inside shouldn't close it
+        className="relative bg-cream w-full max-w-[960px] max-h-[90vh] overflow-y-auto md:flex"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center bg-[rgba(254,253,251,0.9)] rounded-full text-darker transition-colors hover:bg-sand"
+        >
+          <X size={20} />
+        </button>
+
+        {/* Image — object-contain shows the entire photo (landscape sets included) */}
+        <div className="md:w-3/5 bg-sand flex items-center justify-center p-4 md:p-6">
+          <img
+            src={image}
+            alt={`${product.name} - ${product.material}`}
+            className="w-full max-h-[40vh] md:max-h-[80vh] object-contain"
+          />
+        </div>
+
+        {/* Details */}
+        <div className="md:w-2/5 p-6 md:p-8 flex flex-col">
+          <h3 className="font-serif text-[26px] md:text-[32px] font-semibold text-darker mb-2">
+            {product.name}
+          </h3>
+          <p className="font-sans text-[13px] text-warm uppercase tracking-[0.05em] mb-5">
+            {product.material}
+          </p>
+
+          {hasColors && (
+            <div className="mb-5">
+              <div className="font-sans text-[11px] font-semibold text-warm uppercase tracking-[0.05em] mb-2">
+                Color: {product.colors![color].name}
+              </div>
+              <div className="flex items-center gap-2">
+                {product.colors!.map((c, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setColor(i)}
+                    aria-label={c.name}
+                    title={c.name}
+                    className={`h-6 w-6 rounded-full border border-dune transition-all ${
+                      i === color ? 'ring-2 ring-warm ring-offset-1 ring-offset-cream' : ''
+                    }`}
+                    style={{ backgroundColor: c.swatch }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2.5 border-t border-dune pt-5">
+            {specFields.map(({ key, label }) => (
+              <div key={key} className="flex justify-between items-start gap-3">
+                <span className="font-sans text-[11px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
+                  {label}
+                </span>
+                <span className="font-sans text-[13px] text-muted text-right">{product[key]}</span>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            to="/contact"
+            onClick={onClose}
+            className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-3 bg-darker text-cream font-sans text-[13px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-dark"
+          >
+            Request a Quote
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Product card grid. Owns the one open modal (which product + which color).
+function ProductGrid({ products }: { products: Product[] }) {
+  const [active, setActive] = useState<{ product: Product; colorIndex: number } | null>(null);
+
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+        {products.map((product, i) => (
+          <ProductCard
+            key={i}
+            product={product}
+            index={i}
+            onOpen={(colorIndex) => setActive({ product, colorIndex })}
+          />
+        ))}
+      </div>
+
+      {/* Plain conditional render — closes deterministically (no AnimatePresence
+          quirks with a custom-component child). Open animation still plays. */}
+      {active && (
+        <ProductModal
+          product={active.product}
+          initialColor={active.colorIndex}
+          onClose={() => setActive(null)}
+        />
+      )}
+    </>
   );
 }
 

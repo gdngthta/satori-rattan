@@ -24,7 +24,9 @@ type Product = {
   material: string;
   customizable: string;
   leadTime: string;
-  colors?: ColorVariant[]; // optional — leave it off for single-photo products
+  colors?: ColorVariant[]; // optional — color versions (dot picker on the card)
+  gallery?: string[];      // optional — extra angle photos shown as thumbnails in
+                           // the modal. Use gallery OR colors (gallery wins in the modal).
 };
 
 const naturalProducts: Product[] = [
@@ -52,6 +54,13 @@ const naturalProducts: Product[] = [
     material: 'Premium Rattan Peel',
     customizable: 'Yes',
     leadTime: '10-12 weeks',
+    // DEMO angle photos (stand-ins). Replace with your real angle shots, ideally
+    // in public/images/products/ (e.g. '/images/products/java-front.jpg').
+    gallery: [
+      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=900&h=700&fit=crop',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',
+      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',
+    ],
   },
   {
     name: 'Bali Daybed',
@@ -213,8 +222,11 @@ function ProductModal({
   onClose: () => void;
 }) {
   const [color, setColor] = useState(initialColor);
+  const [imgIndex, setImgIndex] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
-  const image = hasColors ? product.colors![color].image : product.image;
+  // gallery (angle photos) wins over colors for the modal image if present
+  const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : null;
+  const image = gallery ? gallery[imgIndex] : hasColors ? product.colors![color].image : product.image;
 
   // Esc to close + lock the background from scrolling while the modal is open
   useEffect(() => {
@@ -247,7 +259,7 @@ function ProductModal({
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         onClick={(e) => e.stopPropagation()} // clicks inside shouldn't close it
-        className="relative bg-cream w-full max-w-[960px] max-h-[90vh] overflow-y-auto md:flex"
+        className="relative bg-cream w-full max-w-[1080px] max-h-[90vh] overflow-y-auto md:flex"
       >
         <button
           type="button"
@@ -258,13 +270,30 @@ function ProductModal({
           <X size={20} />
         </button>
 
-        {/* Image — object-contain shows the entire photo (landscape sets included) */}
-        <div className="md:w-3/5 bg-sand flex items-center justify-center p-4 md:p-6">
+        {/* Image — object-contain shows the entire photo. Thumbnails switch angles. */}
+        <div className="md:w-3/5 bg-sand flex flex-col gap-3 p-4 md:p-6">
           <img
             src={image}
             alt={`${product.name} - ${product.material}`}
-            className="w-full max-h-[40vh] md:max-h-[80vh] object-contain"
+            className="w-full flex-1 min-h-0 max-h-[38vh] md:max-h-[72vh] object-contain"
           />
+          {gallery && gallery.length > 1 && (
+            <div className="flex gap-2 justify-center flex-wrap">
+              {gallery.map((img, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setImgIndex(i)}
+                  aria-label={`View angle ${i + 1}`}
+                  className={`w-14 h-14 md:w-16 md:h-16 overflow-hidden border transition-all ${
+                    i === imgIndex ? 'border-warm ring-1 ring-warm' : 'border-dune opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Details */}
@@ -276,7 +305,7 @@ function ProductModal({
             {product.material}
           </p>
 
-          {hasColors && (
+          {hasColors && !gallery && (
             <div className="mb-5">
               <div className="font-sans text-[11px] font-semibold text-warm uppercase tracking-[0.05em] mb-2">
                 Color: {product.colors![color].name}

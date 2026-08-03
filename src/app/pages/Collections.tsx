@@ -78,6 +78,20 @@ const naturalProducts: Product[] = [
     customizable: 'Yes',
     leadTime: '8-10 weeks',
   },
+  {
+    // DEMO of a wide SET: tall crop on the card, full wide shot in the modal.
+    name: 'Colonial Living Set (3+1+1)',
+    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&h=760&fit=crop', // ← TALL crop (sofa) for the small card
+    dimensions: '3-Seater + 2 Armchairs',
+    material: 'Solid Teak & Rattan',
+    customizable: 'Yes',
+    leadTime: '10-12 weeks',
+    gallery: [
+      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=700&fit=crop', // ← WIDE full-set shot (shows complete in the modal)
+      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',  // sofa close-up
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',      // armchair close-up
+    ],
+  },
 ];
 
 const syntheticProducts: Product[] = [

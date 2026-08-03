@@ -87,7 +87,7 @@ export default function Craftsmanship() {
       <section className="relative h-[60vh] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1565183928294-7d22f90a72d6?w=1920&h=1080&fit=crop"
+            src="/images/pages/Hero-Craftsmanship.jpg"
             alt="Master artisan weaving natural rattan furniture"
             className="w-full h-full object-cover"
           />

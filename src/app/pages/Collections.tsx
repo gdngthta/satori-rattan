@@ -173,8 +173,12 @@ function ProductCard({
 }) {
   const [selected, setSelected] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
-  const wide = !!product.wide; // wide sets render landscape in their own row
+  const wide = !!product.wide; // wide sets take a 2-wide slot (landscape) in the grid
   const activeImage = hasColors ? product.colors![selected].image : product.image;
+
+  // Grid is 6 columns on desktop / 2 on phone. A normal card takes 2 desktop cols
+  // (3-up); a wide card takes 3 (2-up) and full width on phone.
+  const span = wide ? 'col-span-2 md:col-span-3' : 'md:col-span-2';
 
   return (
     <motion.div
@@ -182,7 +186,7 @@ function ProductCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
       viewport={{ once: true, margin: '-100px' }}
-      className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
+      className={`group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1 ${span}`}
     >
       {/* Clicking the photo opens the quick-view. Square (1:1) for normal items;
           landscape (~16:9) for wide sets so a sofa row shows without cropping. */}
@@ -432,29 +436,18 @@ function ProductModal({
 function ProductGrid({ products }: { products: Product[] }) {
   const [active, setActive] = useState<{ product: Product; colorIndex: number } | null>(null);
 
-  const normal = products.filter((p) => !p.wide);
-  const wides = products.filter((p) => p.wide);
   const open = (product: Product) => (colorIndex: number) => setActive({ product, colorIndex });
 
   return (
     <>
-      {/* Normal items — square cards, 2-up on phone, 3-up on desktop */}
-      {normal.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-3">
-          {normal.map((product, i) => (
-            <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
-          ))}
-        </div>
-      )}
-
-      {/* Sets — wide landscape cards, 1-up on phone, 2-up on desktop */}
-      {wides.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2 mt-4 md:mt-8">
-          {wides.map((product, i) => (
-            <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
-          ))}
-        </div>
-      )}
+      {/* One dense 6-col grid: normal cards take 2 cols (3-up), wide sets take 3
+          (2-up). grid-flow-row-dense lets a wide card slot into a gap next to a
+          lone portrait instead of dropping to its own row. */}
+      <div className="grid grid-cols-2 md:grid-cols-6 grid-flow-row-dense gap-4 md:gap-8">
+        {products.map((product, i) => (
+          <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
+        ))}
+      </div>
 
       {/* Plain conditional render — closes deterministically (no AnimatePresence
           quirks with a custom-component child). Open animation still plays. */}

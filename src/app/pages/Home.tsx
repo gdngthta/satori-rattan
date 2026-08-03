@@ -126,7 +126,7 @@ export default function Home() {
       <section className="relative h-[70vh] md:h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Hero-Picture.jpg"
+            src="/images/pages/Man_O_Hero.png"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
             className="w-full h-full object-cover"
           />
@@ -153,7 +153,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] border-2 border-white/30 text-white font-sans text-[14px] font-semibold tracking-[0.05em] uppercase backdrop-blur-[8px] transition-all duration-300 ease-smooth hover:bg-white/10 hover:border-white/50"
+                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] border-2 border-white/30 text-white font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-white/10 hover:border-white/50"
               >
                 Start Your Project
               </Link>

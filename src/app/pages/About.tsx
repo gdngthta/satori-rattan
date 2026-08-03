@@ -85,7 +85,7 @@ export default function About() {
               Building Partnerships Through Excellence
             </h1>
             <p className="font-sans text-[15px] md:text-[clamp(18px,2vw,22px)] leading-[1.6] opacity-95">
-              For over 12 years, Satori Rattan has been the trusted B2B partner for global brands seeking premium rattan furniture solutions
+              For over 12 years, Satori Rattan has been the trusted partner for global brands seeking premium rattan furniture solutions
             </p>
           </motion.div>
         </div>
@@ -134,7 +134,7 @@ export default function About() {
               </h2>
               <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-5">
                 Founded in 2014 by master craftsman Satori, Satori Rattan began as a small workshop in Cirebon, Indonesia—the heart of
-                traditional rattan manufacturing. What started with five artisans has grown into a global B2B leader employing over 150 skilled professionals.
+                traditional rattan manufacturing. What started with five artisans has grown into a global manufacturer employing over 150 skilled professionals.
               </p>
               <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-5">
                 Our growth has been guided by unwavering commitment to quality, innovation, and client partnerships. We've evolved from producing

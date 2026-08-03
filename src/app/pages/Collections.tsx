@@ -27,6 +27,8 @@ type Product = {
   colors?: ColorVariant[]; // optional — color versions (dot picker on the card)
   gallery?: string[];      // optional — extra angle photos shown as thumbnails in
                            // the modal. Use gallery OR colors (gallery wins in the modal).
+  wide?: boolean;          // optional — SETS/sofas: renders as a wide landscape card
+                           // in its own 2-up "Sets" row (instead of a square 3-up card).
 };
 
 const naturalProducts: Product[] = [
@@ -64,11 +66,12 @@ const naturalProducts: Product[] = [
   },
   {
     name: 'Bali Daybed',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=700&fit=crop',
+    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&h=560&fit=crop', // landscape shot for the wide card
     dimensions: 'W 180cm × D 150cm × H 45cm',
     material: 'Natural Rattan & Teak',
     customizable: 'Limited',
     leadTime: '12-14 weeks',
+    wide: true, // ← wide landscape card (a daybed is wide, so it suits a set-style card)
   },
   {
     name: 'Sumatra Accent Chair',
@@ -79,13 +82,14 @@ const naturalProducts: Product[] = [
     leadTime: '8-10 weeks',
   },
   {
-    // DEMO of a wide SET: tall crop on the card, full wide shot in the modal.
+    // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
     name: 'Colonial Living Set (3+1+1)',
-    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&h=760&fit=crop', // ← TALL crop (sofa) for the small card
+    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=1000&h=560&fit=crop', // ← LANDSCAPE shot for the wide card
     dimensions: '3-Seater + 2 Armchairs',
     material: 'Solid Teak & Rattan',
     customizable: 'Yes',
     leadTime: '10-12 weeks',
+    wide: true, // ← wide landscape card in its own row
     gallery: [
       'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=700&fit=crop', // ← WIDE full-set shot (shows complete in the modal)
       'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',  // sofa close-up
@@ -154,6 +158,7 @@ function ProductCard({
 }) {
   const [selected, setSelected] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
+  const wide = !!product.wide; // wide sets render landscape in their own row
   const activeImage = hasColors ? product.colors![selected].image : product.image;
 
   return (
@@ -164,13 +169,13 @@ function ProductCard({
       viewport={{ once: true, margin: '-100px' }}
       className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
     >
-      {/* Clicking the photo opens the quick-view. pt-[100%] = a 1:1 SQUARE box —
-          the versatile ratio that crops wide sofas far less than a tall 4:5. */}
+      {/* Clicking the photo opens the quick-view. Square (1:1) for normal items;
+          landscape (~16:9) for wide sets so a sofa row shows without cropping. */}
       <button
         type="button"
         onClick={() => onOpen(selected)}
         aria-label={`View ${product.name}`}
-        className="relative block w-full pt-[100%] overflow-hidden cursor-pointer"
+        className={`relative block w-full overflow-hidden cursor-pointer ${wide ? 'pt-[56%]' : 'pt-[100%]'}`}
       >
         <img
           src={activeImage}
@@ -208,18 +213,32 @@ function ProductCard({
           </div>
         )}
 
-        <div className="flex flex-col gap-1.5 md:gap-2">
-          {specFields.map(({ key, label }) => (
-            <div key={key} className="flex justify-between items-start gap-2">
-              <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
-                {label}
-              </span>
-              <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
-                {product[key]}
-              </span>
-            </div>
-          ))}
-        </div>
+        {wide ? (
+          // wide card: specs spread across a row to use the landscape width
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+            {specFields.map(({ key, label }) => (
+              <div key={key}>
+                <div className="font-sans text-[10px] md:text-[11px] font-semibold text-warm uppercase tracking-[0.05em] mb-1">
+                  {label}
+                </div>
+                <div className="font-sans text-[12px] md:text-[13px] text-muted">{product[key]}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1.5 md:gap-2">
+            {specFields.map(({ key, label }) => (
+              <div key={key} className="flex justify-between items-start gap-2">
+                <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
+                  {label}
+                </span>
+                <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
+                  {product[key]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );
@@ -393,21 +412,34 @@ function ProductModal({
 }
 
 // Product card grid. Owns the one open modal (which product + which color).
+// Normal products fill a 3-up square grid; wide sets get their own 2-up
+// landscape row below — so a sofa set never has to squeeze into a small card.
 function ProductGrid({ products }: { products: Product[] }) {
   const [active, setActive] = useState<{ product: Product; colorIndex: number } | null>(null);
 
+  const normal = products.filter((p) => !p.wide);
+  const wides = products.filter((p) => p.wide);
+  const open = (product: Product) => (colorIndex: number) => setActive({ product, colorIndex });
+
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-        {products.map((product, i) => (
-          <ProductCard
-            key={i}
-            product={product}
-            index={i}
-            onOpen={(colorIndex) => setActive({ product, colorIndex })}
-          />
-        ))}
-      </div>
+      {/* Normal items — square cards, 2-up on phone, 3-up on desktop */}
+      {normal.length > 0 && (
+        <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-3">
+          {normal.map((product, i) => (
+            <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
+          ))}
+        </div>
+      )}
+
+      {/* Sets — wide landscape cards, 1-up on phone, 2-up on desktop */}
+      {wides.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2 mt-4 md:mt-8">
+          {wides.map((product, i) => (
+            <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
+          ))}
+        </div>
+      )}
 
       {/* Plain conditional render — closes deterministically (no AnimatePresence
           quirks with a custom-component child). Open animation still plays. */}

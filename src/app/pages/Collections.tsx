@@ -165,20 +165,22 @@ const eyebrow = 'font-sans text-[13px] font-semibold tracking-[0.15em] uppercase
 function ProductCard({
   product,
   index,
+  mdSpan,
   onOpen,
 }: {
   product: Product;
   index: number;
+  mdSpan: string; // desktop column-span class (computed so every row fills fully)
   onOpen: (colorIndex: number) => void;
 }) {
   const [selected, setSelected] = useState(0);
   const hasColors = !!product.colors && product.colors.length > 0;
-  const wide = !!product.wide; // wide sets take a 2-wide slot (landscape) in the grid
+  const wide = !!product.wide; // wide sets take a wider slot (landscape) in the grid
   const activeImage = hasColors ? product.colors![selected].image : product.image;
 
-  // Grid is 6 columns on desktop / 2 on phone. A normal card takes 2 desktop cols
-  // (3-up); a wide card takes 3 (2-up) and full width on phone.
-  const span = wide ? 'col-span-2 md:col-span-3' : 'md:col-span-2';
+  // Phone: normal cards are 1 of 2 cols (2-up); wide cards fill the row.
+  // Desktop: mdSpan (from the grid) sizes each card so its row is exactly full.
+  const span = `${wide ? 'col-span-2' : ''} ${mdSpan}`;
 
   return (
     <motion.div
@@ -194,7 +196,9 @@ function ProductCard({
         type="button"
         onClick={() => onOpen(selected)}
         aria-label={`View ${product.name}`}
-        className={`relative block w-full overflow-hidden cursor-pointer ${wide ? 'pt-[56%]' : 'pt-[100%]'}`}
+        // Fixed image height (same for every card) → all names line up and rows
+        // are uniform, whatever each card's width is. object-cover fills the box.
+        className="relative block w-full h-[220px] md:h-[340px] overflow-hidden cursor-pointer"
       >
         <img
           src={activeImage}
@@ -438,14 +442,53 @@ function ProductGrid({ products }: { products: Product[] }) {
 
   const open = (product: Product) => (colorIndex: number) => setActive({ product, colorIndex });
 
+  // Show all normal items first, then the wide sets (stable — keeps each group's
+  // order). This groups portraits into their rows and sets into theirs.
+  const ordered = [...products].sort((a, b) => Number(!!a.wide) - Number(!!b.wide));
+
+  // Desktop is a 6-column grid: normal cards take 2 cols (3-up), wide sets take 3
+  // (2-up). We then grow the LAST wide in each row to fill any leftover columns,
+  // so every row is exactly full width — 3 portraits, OR 2 wides side by side, OR
+  // 1 portrait + 1 wide, all reach the edge. Phone falls back to 2-up via classes.
+  const COLS = 6;
+  const spans = ordered.map((p) => (p.wide ? 3 : 2));
+  {
+    let col = 0;
+    let row: number[] = [];
+    const closeRow = () => {
+      const last = row[row.length - 1];
+      const leftover = COLS - col;
+      if (leftover > 0 && last !== undefined && ordered[last].wide) spans[last] += leftover;
+      col = 0;
+      row = [];
+    };
+    ordered.forEach((_, i) => {
+      if (col + spans[i] > COLS) closeRow();
+      row.push(i);
+      col += spans[i];
+      if (col >= COLS) closeRow();
+    });
+    closeRow();
+  }
+  const spanClass: Record<number, string> = {
+    2: 'md:col-span-2',
+    3: 'md:col-span-3',
+    4: 'md:col-span-4',
+    5: 'md:col-span-5',
+    6: 'md:col-span-6',
+  };
+
   return (
     <>
-      {/* One dense 6-col grid: normal cards take 2 cols (3-up), wide sets take 3
-          (2-up). grid-flow-row-dense lets a wide card slot into a gap next to a
-          lone portrait instead of dropping to its own row. */}
-      <div className="grid grid-cols-2 md:grid-cols-6 grid-flow-row-dense gap-4 md:gap-8">
-        {products.map((product, i) => (
-          <ProductCard key={i} product={product} index={i} onOpen={open(product)} />
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4 md:gap-8">
+        {ordered.map((product, i) => (
+          <ProductCard
+            key={i}
+            product={product}
+            index={i}
+            mdSpan={spanClass[spans[i]] || 'md:col-span-2'}
+            onOpen={open(product)}
+          />
         ))}
       </div>
 

@@ -124,12 +124,27 @@ const syntheticProducts: Product[] = [
     leadTime: '7-9 weeks',
   },
   {
-    name: 'Reef Dining Collection',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&h=700&fit=crop',
-    dimensions: 'Table: W 180cm × D 90cm',
-    material: 'Textured Synthetic Weave',
+    name: 'Cove Accent Chair',
+    image: 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=600&h=700&fit=crop',
+    dimensions: 'W 68cm × D 72cm × H 88cm',
+    material: 'All-Weather PE Rattan',
     customizable: 'Yes',
-    leadTime: '8-10 weeks',
+    leadTime: '5-7 weeks',
+  },
+  {
+    // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
+    name: 'Man O Set',
+    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=1000&h=560&fit=crop', // ← LANDSCAPE shot for the wide card
+    dimensions: '3-Seater + 2 Armchairs + 1 Coffee Table',
+    material: 'Solid Teak & Rattan',
+    customizable: 'Yes',
+    leadTime: '10-12 weeks',
+    wide: true, // ← wide landscape card in its own row
+    gallery: [
+      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=700&fit=crop', // ← WIDE full-set shot (shows complete in the modal)
+      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',  // sofa close-up
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',      // armchair close-up
+    ],
   },
 ];
 

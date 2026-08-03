@@ -164,12 +164,13 @@ function ProductCard({
       viewport={{ once: true, margin: '-100px' }}
       className="group bg-sand overflow-hidden transition-transform duration-300 ease-smooth hover:-translate-y-1"
     >
-      {/* Clicking the photo opens the quick-view. pt-[125%] keeps the 4:5 box. */}
+      {/* Clicking the photo opens the quick-view. pt-[100%] = a 1:1 SQUARE box —
+          the versatile ratio that crops wide sofas far less than a tall 4:5. */}
       <button
         type="button"
         onClick={() => onOpen(selected)}
         aria-label={`View ${product.name}`}
-        className="relative block w-full pt-[125%] overflow-hidden cursor-pointer"
+        className="relative block w-full pt-[100%] overflow-hidden cursor-pointer"
       >
         <img
           src={activeImage}

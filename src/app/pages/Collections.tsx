@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, CheckCircle2, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import emailjs from '@emailjs/browser';
 import { fadeUp } from '../lib/animations';
 
@@ -20,10 +20,12 @@ type ColorVariant = { name: string; swatch: string; image: string };
 type Product = {
   name: string;
   image: string;           // default photo (used when there are no color options)
-  dimensions: string;
-  material: string;
-  customizable: string;
-  leadTime: string;
+  // Marketing copy instead of specs. Use either/both per product:
+  //   tagline    → one short editorial hook line (serif italic on the card)
+  //   narration  → a supporting sentence or two (muted paragraph under it)
+  // one-line style = tagline only · paragraph style = narration only · both = tagline + sentence
+  tagline?: string;
+  narration?: string;
   colors?: ColorVariant[]; // optional — color versions (dot picker on the card)
   gallery?: string[];      // optional — extra angle photos shown as thumbnails in
                            // the modal. Use gallery OR colors (gallery wins in the modal).
@@ -33,128 +35,135 @@ type Product = {
 
 const naturalProducts: Product[] = [
   {
-    name: 'Lombok Lounge Chair',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=700&fit=crop',
-    dimensions: 'W 75cm × D 80cm × H 85cm',
-    material: 'Natural Rattan Core',
-    customizable: 'Yes',
-    leadTime: '8-10 weeks',
+    name: 'Terrace',
+    image: './images/products/Terrace-Indoor-Chair-Square.webp',
+    // STYLE A — one-line tagline only.
+    tagline: 'The quiet centre of a sunlit room.',
+    gallery: [
+      './images/products/Terrace-Indoor-Chair-Square.webp',
+      './images/products/Terrace-Indoor-Chair-Front-Square.webp',
+      './images/products/Terrace-Indoor-Chair-Side-Square.webp'
+    ],
     // ⬇️ DEMO color options (stand-in photos so you can see it work).
     //    Replace each `image` with your REAL color-variant photo, and set the
     //    `swatch` hex + `name` to match. Delete this whole `colors` block for
     //    products that only come in one color.
-    colors: [
-      { name: 'Natural',  swatch: '#d4c5b9', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=700&fit=crop' },
-      { name: 'Charcoal', swatch: '#2c2926', image: 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=600&h=700&fit=crop' },
-      { name: 'Sand',     swatch: '#e6ddd1', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=700&fit=crop' },
-    ],
+    // colors: [
+    //   { name: 'Warm Brown',  swatch: '#3A332A', image: './images/products/Canari-Chair-DarkBrown.webp' },
+    //   { name: 'Natural', swatch: '#C9A77E', image: './images/products/Canari-Chair-Natural.webp' },
+    //   { name: 'Sand',     swatch: '#e6ddd1', image: './images/products/Canari-Chair-Sand.webp' },
+    // ],
   },
   {
-    name: 'Java Dining Set',
-    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=600&h=700&fit=crop',
-    dimensions: 'Table: Ø 140cm × H 75cm',
-    material: 'Premium Rattan Peel',
-    customizable: 'Yes',
-    leadTime: '10-12 weeks',
+    name: 'H Low',
+    image: './images/products/H-Low-Chair-Jati-Front-Further.webp',
+    // STYLE B — short paragraph only (no tagline).
+    narration: 'Low to the ground and impossibly easy — hand-woven rattan peel draped over a solid frame, a chair that asks nothing of you but a long, unhurried afternoon.',
     // DEMO angle photos (stand-ins). Replace with your real angle shots, ideally
     // in public/images/products/ (e.g. '/images/products/java-front.jpg').
     gallery: [
-      'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=900&h=700&fit=crop',
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',
-      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',
+      './images/products/H-Low-Chair-Jati-Front.webp',
+      './images/products/H-Low-Chair-Jati.webp',
+      './images/products/H-Low-Chair-Mahoni-Front.webp',
+      './images/products/H-Low-Chair-Mahoni.webp',
     ],
   },
   {
-    name: 'Bali Daybed',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&h=560&fit=crop', // landscape shot for the wide card
-    dimensions: 'W 180cm × D 150cm × H 45cm',
-    material: 'Natural Rattan & Teak',
-    customizable: 'Limited',
-    leadTime: '12-14 weeks',
-    wide: true, // ← wide landscape card (a daybed is wide, so it suits a set-style card)
+    name: 'Elena',
+    image: './images/products/Elena-Chair-ZoomOut.webp', // portrait crop now that this is a normal (tall) card
+    // STYLE C — tagline + one supporting sentence.
+    tagline: 'Sculpture you can sit in.',
+    narration: 'Curved rattan and teak resolved into a single fluid line — poised, and quietly sociable.',
+    gallery: [
+      './images/products/Elena-Chair-Square.webp',
+      './images/products/Elena-Front-Square.webp',
+    ]
   },
   {
-    name: 'Sumatra Accent Chair',
-    image: 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=600&h=700&fit=crop',
-    dimensions: 'W 65cm × D 70cm × H 95cm',
-    material: 'Woven Rattan Core',
-    customizable: 'Yes',
-    leadTime: '8-10 weeks',
+    name: 'Mild',
+    image: './images/products/Mild-Chair-Square.webp',
+    // STYLE A — one-line tagline only.
+    tagline: 'Softness, given a spine.',
+    gallery: [
+      './images/products/Mild-Chair-Square.webp',
+      './images/products/Mild-Chair-Front-Square.webp',
+    ]
   },
   {
     // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
-    name: 'Colonial Living Set (3+1+1)',
-    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=1000&h=560&fit=crop', // ← LANDSCAPE shot for the wide card
-    dimensions: '3-Seater + 2 Armchairs',
-    material: 'Solid Teak & Rattan',
-    customizable: 'Yes',
-    leadTime: '10-12 weeks',
+    name: 'Man O',
+    image: './images/products/Man-O-Set.webp', // ← LANDSCAPE shot for the wide card
+    // STYLE C — tagline + one supporting sentence (wide set).
+    tagline: 'The room, gathered.',
+    narration: 'A three-seater, two armchairs and a low table in solid teak and rattan — a whole conversation, arranged.',
     wide: true, // ← wide landscape card in its own row
     gallery: [
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=700&fit=crop', // ← WIDE full-set shot (shows complete in the modal)
-      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',  // sofa close-up
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',      // armchair close-up
+      './images/products/Man-O-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/Man-O-Sofa.webp',  // sofa close-up
+      './images/products/Man-O-Chair-Square.webp',      // armchair close-up
+      './images/products/Man-O-Table-Square.webp', // coffee table close-up
     ],
   },
 ];
 
 const syntheticProducts: Product[] = [
   {
-    name: 'Marina Outdoor Sofa',
-    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&h=700&fit=crop',
-    dimensions: 'W 220cm × D 90cm × H 75cm',
-    material: 'UV-Resistant PE Rattan',
-    customizable: 'Yes',
-    leadTime: '6-8 weeks',
+    name: 'Kolot',
+    image: './images/products/Kolot-Set.webp', // landscape crop for the wide card
+    // STYLE B — short paragraph only (wide set).
+    narration: 'Built for salt air and long seasons — UV-stable weave over a weatherproof frame, arranged as a full lounge set that brings the ease of the indoors out onto the terrace and never asks to come back in.',
+    wide: true, // ← now wide, so Synthetic has 2 wides (Kolot + Gading Set) in its own row
+    gallery: [
+      './images/products/Kolot-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/Kolot-Out-Sofa.webp',  // sofa close-up
+      './images/products/Kolot-Out-Single-Chair-Square.webp',      // armchair close-up
+      './images/products/Kolot-Out-Table-Square.webp', // coffee table close-up
+      './images/products/Kolot-Out-Lounge-Chair-Square.webp', // coffee table close-up
+    ]
   },
   {
-    name: 'Coastal Bar Stool',
-    image: 'https://images.unsplash.com/photo-1503602642458-232111445657?w=600&h=700&fit=crop',
-    dimensions: 'W 45cm × D 45cm × H 110cm',
-    material: 'All-Weather Synthetic',
-    customizable: 'Yes',
-    leadTime: '5-7 weeks',
+    name: 'H Low',
+    image: './images/products/Coastal-Bar-Stool.webp',
+    // STYLE C — tagline + one supporting sentence.
+    tagline: 'Perched, and perfectly at ease.',
+    narration: 'All-weather synthetic weave that shrugs off sun and spills — tall enough for the counter, and the good conversation.',
   },
   {
-    name: 'Horizon Lounger',
-    image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&h=700&fit=crop',
-    dimensions: 'W 200cm × D 75cm × H 90cm',
-    material: 'Marine-Grade PE',
-    customizable: 'Limited',
-    leadTime: '7-9 weeks',
+    name: 'Terrace',
+    image: './images/products/Terrace-Out-Square.webp',
+    // STYLE A — one-line tagline only.
+    tagline: 'Made for the open air, unbothered.',
+    gallery: [
+      './images/products/Terrace-Out-Square.webp',
+      './images/products/Terrace-Out-Front-Square.webp',
+      './images/products/Terrace-Out-Side-Square.webp',
+    ]
   },
   {
-    name: 'Cove Accent Chair',
-    image: 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=600&h=700&fit=crop',
-    dimensions: 'W 68cm × D 72cm × H 88cm',
-    material: 'All-Weather PE Rattan',
-    customizable: 'Yes',
-    leadTime: '5-7 weeks',
+    name: 'Canari',
+    image: './images/products/Canari-Chair-Out-Square.webp',
+    // STYLE B — short paragraph only.
+    narration: 'The warmth of hand-woven rattan with none of its worries — marine-grade fibre that holds its colour and its shape through every season on the deck.',
+    gallery: [
+      './images/products/Canari-Chair-Out-Square.webp',
+      './images/products/Canari-Chair-Out-Front-Square.webp',
+    ]
   },
   {
     // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
-    name: 'Man O Set',
-    image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=1000&h=560&fit=crop', // ← LANDSCAPE shot for the wide card
-    dimensions: '3-Seater + 2 Armchairs + 1 Coffee Table',
-    material: 'Solid Teak & Rattan',
-    customizable: 'Yes',
-    leadTime: '10-12 weeks',
+    name: 'Gading Set',
+    image: './images/products/Gading-Set.webp', // ← LANDSCAPE shot for the wide card
+    // STYLE C — tagline + one supporting sentence (wide set).
+    tagline: 'Outdoor living, fully composed.',
+    narration: 'Sofa, armchairs and a low table in all-weather rattan — a set that turns any courtyard into a room.',
     wide: true, // ← wide landscape card in its own row
     gallery: [
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=700&fit=crop', // ← WIDE full-set shot (shows complete in the modal)
-      'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=900&h=700&fit=crop',  // sofa close-up
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&h=700&fit=crop',      // armchair close-up
+      './images/products/Gading-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/Gading-Sofa.webp',  // sofa close-up
+      './images/products/Gading-Chair-Square.webp',      // armchair close-up
+      './images/products/Gading-Table-Square.webp', // coffee table close-up
     ],
   },
-];
-
-// The rows shown inside every product card. Edit a label here -> it changes on
-// every card at once (that's why it's written once, not per card).
-const specFields: { key: 'dimensions' | 'material' | 'customizable' | 'leadTime'; label: string }[] = [
-  { key: 'dimensions', label: 'Dimensions' },
-  { key: 'material', label: 'Material' },
-  { key: 'customizable', label: 'Customizable' },
-  { key: 'leadTime', label: 'Lead Time' },
 ];
 
 // Reused Tailwind label strings (no-prefix = phone, md: = desktop >= 768px).
@@ -202,7 +211,7 @@ function ProductCard({
       >
         <img
           src={activeImage}
-          alt={`${product.name} - ${product.material}`}
+          alt={product.name}
           loading="lazy"
           className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth group-hover:scale-105"
         />
@@ -236,31 +245,18 @@ function ProductCard({
           </div>
         )}
 
-        {wide ? (
-          // wide card: specs spread across a row to use the landscape width
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-            {specFields.map(({ key, label }) => (
-              <div key={key}>
-                <div className="font-sans text-[10px] md:text-[11px] font-semibold text-warm uppercase tracking-[0.05em] mb-1">
-                  {label}
-                </div>
-                <div className="font-sans text-[12px] md:text-[13px] text-muted">{product[key]}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-1.5 md:gap-2">
-            {specFields.map(({ key, label }) => (
-              <div key={key} className="flex justify-between items-start gap-2">
-                <span className="font-sans text-[10px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
-                  {label}
-                </span>
-                <span className="font-sans text-[11px] md:text-[13px] text-muted text-right">
-                  {product[key]}
-                </span>
-              </div>
-            ))}
-          </div>
+        {/* Design narration replaces the old spec rows. tagline = serif italic
+            hook line; narration = muted supporting sentence. A product may have
+            one or both. Wide cards get a slightly larger tagline for the extra width. */}
+        {product.tagline && (
+          <p className={`font-serif italic text-dark leading-snug ${product.narration ? 'mb-2' : ''} ${wide ? 'text-[18px] md:text-[22px]' : 'text-[15px] md:text-[18px]'}`}>
+            {product.tagline}
+          </p>
+        )}
+        {product.narration && (
+          <p className="font-sans text-[12px] md:text-[14px] text-muted leading-relaxed">
+            {product.narration}
+          </p>
         )}
       </div>
     </motion.div>
@@ -332,7 +328,7 @@ function ProductModal({
           <div className="relative flex-1 min-h-0 flex items-center justify-center">
             <img
               src={image}
-              alt={`${product.name} - ${product.material}`}
+              alt={product.name}
               className="w-full max-h-[38vh] md:max-h-[72vh] object-contain"
             />
             {gallery && gallery.length > 1 && (
@@ -379,12 +375,19 @@ function ProductModal({
 
         {/* Details */}
         <div className="md:w-2/5 p-6 md:p-8 flex flex-col">
-          <h3 className="font-serif text-[26px] md:text-[32px] font-semibold text-darker mb-2">
+          <h3 className="font-serif text-[26px] md:text-[32px] font-semibold text-darker mb-3">
             {product.name}
           </h3>
-          <p className="font-sans text-[13px] text-warm uppercase tracking-[0.05em] mb-5">
-            {product.material}
-          </p>
+          {product.tagline && (
+            <p className="font-serif italic text-[18px] md:text-[20px] text-dark leading-snug mb-3">
+              {product.tagline}
+            </p>
+          )}
+          {product.narration && (
+            <p className="font-sans text-[14px] text-muted leading-relaxed mb-5">
+              {product.narration}
+            </p>
+          )}
 
           {hasColors && !gallery && (
             <div className="mb-5">
@@ -409,17 +412,6 @@ function ProductModal({
             </div>
           )}
 
-          <div className="flex flex-col gap-2.5 border-t border-dune pt-5">
-            {specFields.map(({ key, label }) => (
-              <div key={key} className="flex justify-between items-start gap-3">
-                <span className="font-sans text-[11px] md:text-[12px] font-semibold text-warm uppercase tracking-[0.05em] shrink-0">
-                  {label}
-                </span>
-                <span className="font-sans text-[13px] text-muted text-right">{product[key]}</span>
-              </div>
-            ))}
-          </div>
-
           <Link
             to="/contact"
             onClick={onClose}
@@ -437,10 +429,18 @@ function ProductModal({
 // Product card grid. Owns the one open modal (which product + which color).
 // Normal products fill a 3-up square grid; wide sets get their own 2-up
 // landscape row below — so a sofa set never has to squeeze into a small card.
-function ProductGrid({ products }: { products: Product[] }) {
+function ProductGrid({ products, autoOpen }: { products: Product[]; autoOpen?: string }) {
   const [active, setActive] = useState<{ product: Product; colorIndex: number } | null>(null);
 
   const open = (product: Product) => (colorIndex: number) => setActive({ product, colorIndex });
+
+  // Deep-link: when the Home page links here with ?product=NAME for THIS grid's
+  // collection, auto-open that product's quick-view gallery. Matches by `name`.
+  useEffect(() => {
+    if (!autoOpen) return;
+    const match = products.find((p) => p.name === autoOpen);
+    if (match) setActive({ product: match, colorIndex: 0 });
+  }, [autoOpen, products]);
 
   // Show all normal items first, then the wide sets (stable — keeps each group's
   // order). This groups portraits into their rows and sets into theirs.
@@ -590,7 +590,7 @@ function CatalogRequest() {
         Request the Full Catalog
       </h3>
       <p className="font-sans text-[14px] md:text-[16px] text-muted mb-8 leading-[1.6]">
-        See our complete range of 200+ designs. Share your details and we'll email you the full catalog and a tailored quotation.
+        See our designs. Share your details and we'll email you the catalog and a tailored quotation.
       </p>
 
       {error && (
@@ -630,6 +630,12 @@ function CatalogRequest() {
 }
 
 export default function Collections() {
+  // ?product=NAME&collection=natural|synthetic — set when arriving from a Home
+  // featured card, so we open that product's gallery in the matching collection.
+  const [params] = useSearchParams();
+  const wantProduct = params.get('product') || undefined;
+  const wantCollection = params.get('collection');
+
   return (
     <div className="pt-16 md:pt-20">
 
@@ -654,7 +660,7 @@ export default function Collections() {
             title="Natural Rattan Collection"
             subtitle="Sustainably sourced and traditionally crafted for indoor and covered applications"
           />
-          <ProductGrid products={naturalProducts} />
+          <ProductGrid products={naturalProducts} autoOpen={wantCollection === 'natural' ? wantProduct : undefined} />
         </div>
       </section>
 
@@ -669,7 +675,7 @@ export default function Collections() {
             title="Synthetic Rattan Collection"
             subtitle="High-performance, all-weather solutions for outdoor commercial applications"
           />
-          <ProductGrid products={syntheticProducts} />
+          <ProductGrid products={syntheticProducts} autoOpen={wantCollection === 'synthetic' ? wantProduct : undefined} />
         </div>
       </section>
 

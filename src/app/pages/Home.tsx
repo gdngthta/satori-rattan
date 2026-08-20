@@ -1,7 +1,11 @@
 import { motion } from 'motion/react';
-import { ArrowRight, Check, Quote, ExternalLink, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
+import { ArrowRight, Check, Quote, Maximize2, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
 import { Link } from 'react-router';
 import { fadeUp } from '../lib/animations';
+
+// Link with motion animation support (so featured cards can fade in AND route
+// internally to the Collections page instead of opening external sites).
+const MotionLink = motion.create(Link);
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  COPYWRITING lives in these arrays. Edit text inside the quotes; keep names.
@@ -10,7 +14,7 @@ import { fadeUp } from '../lib/animations';
 const credentials = [
   '12+ Years Manufacturing Excellence',
   'Exported to 40+ Countries',
-  'B2B Trusted Partner',
+  'Trusted Partner',
 ];
 
 const stats = [
@@ -54,32 +58,36 @@ const processSteps = [
 
 const featuredProjects = [
   {
-    name: 'Kolot Chair',
+    name: 'Terrace',
     location: 'Manao rattan skin off with leather binded.',
-    image: '/images/products/Crown-Chair-WarmBeige.png',
+    image: '/images/products/Terrace-Indoor-Chair.webp',
     category: 'Lounge',
-    link: 'https://urbanquarter.com/indonesian/memilih-furniture-untuk-menciptakan-rumah-yang-nyaman-dari-toko-furnitur-jakarta-selatan/',
+    collection: 'natural', // which tab on the Collections page this lives in
+    product: 'Terrace',    // must match the product `name` in Collections.tsx exactly
   },
   {
-    name: 'Canari',
+    name: 'Kolot Lounge Chair',
     location: 'Carbon steel powder coated / Polyethylene weave',
-    image: '/images/products/Canari-Chair.png',
+    image: '/images/products/Kolot-Out-Lounge-Chair.webp',
     category: 'Dining',
-    link: 'https://www.berkeleygroup.co.uk/',
+    collection: 'synthetic',
+    product: 'Kolot',
   },
   {
     name: 'Man O',
     location: 'Carbon steel powder coated / Rattan core weave.',
-    image: '/images/products/Glass-Chair.jpg',
+    image: '/images/products/Man-O-Chair.webp',
     category: 'Lounge',
-    link: 'https://www.scorpiosmusic.com/',
+    collection: 'natural',
+    product: 'Man O',
   },
   {
-    name: 'Koreza',
-    location: 'Singapore',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&h=900&fit=crop',
-    category: 'Commercial',
-    link: 'https://www.unlisted-collection.com/',
+    name: 'Elena',
+    location: 'Black Rattan',
+    image: '/images/products/Elena-Front.webp',
+    category: 'Lounge',
+    collection: 'natural',
+    product: 'Elena',
   },
 ];
 
@@ -111,7 +119,7 @@ const clients = [
   { name: 'Muji',        logo: '/images/brands/muji.webp' },   // ← real logo
   { name: 'Unsoed',      logo: '/images/brands/unsoed.webp' }, // ← real logo
   { name: 'MBG',         logo: '/images/brands/mbg.png' },    // ← real logo
-  { name: 'Brand Four',  logo: placeholderLogo('Brand Four') },
+  { name: 'Maison Louis Drucker',  logo: './images/brands/Drucker-Logo.svg' },
   { name: 'Brand Five',  logo: placeholderLogo('Brand Five') },
 ];
 
@@ -126,12 +134,14 @@ export default function Home() {
       <section className="relative h-[70vh] md:h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Man_O_Hero.png"
+            src="/images/pages/Man-O-Hero.png"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,31,28,0.7)_0%,rgba(139,121,105,0.4)_100%)]" />
+        {/* Left→right scrim: dark behind the text for legibility, then fully clear
+            over the chair on the right so the product stays crisp and bright. */}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(34,31,28,0.8)_0%,rgba(34,31,28,0.45)_38%,rgba(34,31,28,0)_62%)]" />
         <div className="relative h-full max-w-[1440px] mx-auto px-6 md:px-12 flex items-center text-white">
           <motion.div {...fadeUp} className="max-w-full md:max-w-[800px]">
             <div className="font-sans text-[11px] md:text-[13px] font-semibold tracking-[0.15em] uppercase mb-4 md:mb-6 opacity-90">
@@ -279,11 +289,11 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
             {featuredProjects.map((project, i) => (
-              <motion.a
+              <MotionLink
                 key={i}
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                // Deep-link into Collections: opens the right tab AND auto-opens
+                // this product's quick-view gallery (see Collections.tsx).
+                to={`/collections?collection=${project.collection}&product=${encodeURIComponent(project.product)}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
@@ -299,7 +309,7 @@ export default function Home() {
                   />
                   {/* Small icon that fades in when the card is hovered */}
                   <div className="absolute top-3 right-3 w-8 h-8 bg-[rgba(254,253,251,0.95)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-smooth">
-                    <ExternalLink size={14} className="text-darker" />
+                    <Maximize2 size={14} className="text-darker" />
                   </div>
                 </div>
                 <div className="py-3 md:py-6">
@@ -314,7 +324,7 @@ export default function Home() {
                     {project.location}
                   </p>
                 </div>
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
 
@@ -349,7 +359,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop"
+                  src="./images/pages/Man-O-Set.png"
                   alt="Natural rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
@@ -379,7 +389,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop"
+                  src="./images/products/Kolot-Set-Wide.png"
                   alt="Synthetic rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"

@@ -87,13 +87,14 @@ export default function Craftsmanship() {
       <section className="relative h-[60vh] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Hero-Craftsmanship.jpg"
+            src="/images/pages/Hero-Craftmanship.png"
             alt="Master artisan weaving natural rattan furniture"
             className="w-full h-full object-cover"
           />
         </div>
-        {/* Dark gradient so the white text stays readable over the photo */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(34,31,28,0.85)_0%,rgba(34,31,28,0.3)_100%)]" />
+        {/* Dark on the left for text legibility, fading to fully clear on the
+            right so the photo shows through cleanly (no all-over dark film). */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(34,31,28,0.85)_0%,rgba(34,31,28,0.4)_45%,rgba(34,31,28,0)_80%)]" />
         <div className="relative h-full max-w-[1440px] mx-auto px-6 md:px-12 flex items-center text-white">
           <motion.div {...fadeUp} className="max-w-full md:max-w-[700px]">
             <div className="font-sans text-[11px] md:text-[13px] font-semibold tracking-[0.15em] uppercase mb-4 md:mb-6 opacity-90">

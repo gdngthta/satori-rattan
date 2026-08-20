@@ -1,7 +1,11 @@
 import { motion } from 'motion/react';
-import { ArrowRight, Check, Quote, ExternalLink } from 'lucide-react';
+import { ArrowRight, Check, Quote, Maximize2, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
 import { Link } from 'react-router';
 import { fadeUp } from '../lib/animations';
+
+// Link with motion animation support (so featured cards can fade in AND route
+// internally to the Collections page instead of opening external sites).
+const MotionLink = motion.create(Link);
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  COPYWRITING lives in these arrays. Edit text inside the quotes; keep names.
@@ -10,7 +14,7 @@ import { fadeUp } from '../lib/animations';
 const credentials = [
   '12+ Years Manufacturing Excellence',
   'Exported to 40+ Countries',
-  'B2B Trusted Partner',
+  'Trusted Partner',
 ];
 
 const stats = [
@@ -54,33 +58,69 @@ const processSteps = [
 
 const featuredProjects = [
   {
-    name: 'Kolot Chair',
+    name: 'Terrace',
     location: 'Manao rattan skin off with leather binded.',
-    image: '/images/Crown-Chair-WarmBeige.png',
+    image: '/images/products/Terrace-Indoor-Chair.webp',
     category: 'Lounge',
-    link: 'https://urbanquarter.com/indonesian/memilih-furniture-untuk-menciptakan-rumah-yang-nyaman-dari-toko-furnitur-jakarta-selatan/',
+    collection: 'natural', // which tab on the Collections page this lives in
+    product: 'Terrace',    // must match the product `name` in Collections.tsx exactly
   },
   {
-    name: 'Canari',
+    name: 'Kolot Lounge Chair',
     location: 'Carbon steel powder coated / Polyethylene weave',
-    image: '/images/Canari-Chair.png',
+    image: '/images/products/Kolot-Out-Lounge-Chair.webp',
     category: 'Dining',
-    link: 'https://www.berkeleygroup.co.uk/',
+    collection: 'synthetic',
+    product: 'Kolot',
   },
   {
     name: 'Man O',
     location: 'Carbon steel powder coated / Rattan core weave.',
-    image: '/images/Glass-Chair.jpg',
+    image: '/images/products/Man-O-Chair.webp',
     category: 'Lounge',
-    link: 'https://www.scorpiosmusic.com/',
+    collection: 'natural',
+    product: 'Man O',
   },
   {
-    name: 'Koreza',
-    location: 'Singapore',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&h=900&fit=crop',
-    category: 'Commercial',
-    link: 'https://www.unlisted-collection.com/',
+    name: 'Elena',
+    location: 'Black Rattan',
+    image: '/images/products/Elena-Front.webp',
+    category: 'Lounge',
+    collection: 'natural',
+    product: 'Elena',
   },
+];
+
+// Our Markets — industry categories (true & generic, needs no client permission).
+// Edit titles/descriptions inside the quotes; keep the icon + field names.
+const industries = [
+  { icon: Hotel, title: 'Hospitality', description: 'Hotels, resorts, restaurants, and beach clubs seeking durable, design-forward furniture.' },
+  { icon: HomeIcon, title: 'Residential', description: 'Developers and interior designers furnishing homes, apartments, and villas.' },
+  { icon: Building2, title: 'Commercial', description: 'Offices, lobbies, and mixed-use spaces that need quality at scale.' },
+  { icon: Store, title: 'Retail', description: 'Showrooms and retail brands looking for distinctive, on-brand pieces.' },
+];
+
+// Draws a self-contained placeholder logo box (no internet needed) so you can
+// SEE the layout. Uses the brand's dune/warm colors. Delete this once you have
+// real logos.
+const placeholderLogo = (label: string) =>
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="90"><rect width="220" height="90" fill="#eae5de"/><text x="110" y="52" font-family="Georgia, serif" font-size="22" fill="#8b7969" text-anchor="middle">${label}</text></svg>`
+  );
+
+// ⬇️ EDIT THIS with your REAL clients (only brands you're allowed to show).
+//   name = the brand name (also used as the image's alt text for accessibility).
+//   logo = a real file path OR a placeholder box.
+//   For a REAL logo: put the file in public/images/brands/ and point to it,
+//   e.g. logo: '/images/brands/muji.webp'  (SVG/WebP/PNG all work).
+// Add or remove lines to change how many show.
+const clients = [
+  { name: 'Muji',        logo: '/images/brands/muji.webp' },   // ← real logo
+  { name: 'Unsoed',      logo: '/images/brands/unsoed.webp' }, // ← real logo
+  { name: 'MBG',         logo: '/images/brands/mbg.png' },    // ← real logo
+  { name: 'Maison Louis Drucker',  logo: './images/brands/Drucker-Logo.svg' },
+  { name: 'Brand Five',  logo: placeholderLogo('Brand Five') },
 ];
 
 // Reused warm "eyebrow" label above section titles.
@@ -94,12 +134,14 @@ export default function Home() {
       <section className="relative h-[70vh] md:h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/Hero-Picture.jpg"
+            src="/images/pages/Man-O-Hero.png"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,31,28,0.7)_0%,rgba(139,121,105,0.4)_100%)]" />
+        {/* Left→right scrim: dark behind the text for legibility, then fully clear
+            over the chair on the right so the product stays crisp and bright. */}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(34,31,28,0.8)_0%,rgba(34,31,28,0.45)_38%,rgba(34,31,28,0)_62%)]" />
         <div className="relative h-full max-w-[1440px] mx-auto px-6 md:px-12 flex items-center text-white">
           <motion.div {...fadeUp} className="max-w-full md:max-w-[800px]">
             <div className="font-sans text-[11px] md:text-[13px] font-semibold tracking-[0.15em] uppercase mb-4 md:mb-6 opacity-90">
@@ -121,7 +163,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] border-2 border-white/30 text-white font-sans text-[14px] font-semibold tracking-[0.05em] uppercase backdrop-blur-[8px] transition-all duration-300 ease-smooth hover:bg-white/10 hover:border-white/50"
+                className="inline-flex items-center justify-center gap-3 px-7 py-3.5 md:px-10 md:py-[18px] border-2 border-white/30 text-white font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-white/10 hover:border-white/50"
               >
                 Start Your Project
               </Link>
@@ -162,6 +204,73 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* ── Who We Serve (Industries) ── */}
+      <section className="px-6 py-20 md:px-12 md:py-[140px]">
+        <div className="max-w-[1440px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            viewport={{ once: true, margin: '-100px' }}
+            className="text-center mb-10 md:mb-16"
+          >
+            <div className={eyebrow}>Our Markets</div>
+            <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
+              Industries We Serve
+            </h2>
+            <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[640px] mx-auto leading-[1.6]">
+              From five-star hospitality to large-scale residential developments, we partner with brands across every corner of the furniture market.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-4">
+            {industries.map((ind, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+                viewport={{ once: true, margin: '-100px' }}
+                className="p-6 md:p-10 bg-sand border border-dune text-center transition-all duration-300 ease-smooth hover:-translate-y-1 hover:border-warm"
+              >
+                <ind.icon className="w-8 h-8 md:w-10 md:h-10 text-warm mx-auto mb-4 md:mb-6" />
+                <h3 className="font-serif text-[18px] md:text-[22px] font-semibold text-darker mb-2">
+                  {ind.title}
+                </h3>
+                <p className="font-sans text-[13px] md:text-[14px] text-muted leading-[1.6]">
+                  {ind.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trusted By (specific brands) — edit the `clients` list above ── */}
+      <section className="bg-sand px-6 py-12 md:px-12 md:py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          viewport={{ once: true, margin: '-100px' }}
+          className="max-w-[1440px] mx-auto text-center"
+        >
+          <div className="font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-8">
+            Who We Serve
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 md:gap-x-16">
+            {clients.map((client, i) => (
+              <img
+                key={i}
+                src={client.logo}
+                alt={client.name}
+                className="h-10 md:h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 ease-smooth"
+              />
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
       {/* ── Featured Products ── */}
       <section className="px-6 py-20 md:px-12 md:py-[140px]">
         <div className="max-w-[1440px] mx-auto">
@@ -180,11 +289,11 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
             {featuredProjects.map((project, i) => (
-              <motion.a
+              <MotionLink
                 key={i}
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                // Deep-link into Collections: opens the right tab AND auto-opens
+                // this product's quick-view gallery (see Collections.tsx).
+                to={`/collections?collection=${project.collection}&product=${encodeURIComponent(project.product)}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
@@ -200,7 +309,7 @@ export default function Home() {
                   />
                   {/* Small icon that fades in when the card is hovered */}
                   <div className="absolute top-3 right-3 w-8 h-8 bg-[rgba(254,253,251,0.95)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-smooth">
-                    <ExternalLink size={14} className="text-darker" />
+                    <Maximize2 size={14} className="text-darker" />
                   </div>
                 </div>
                 <div className="py-3 md:py-6">
@@ -215,25 +324,10 @@ export default function Home() {
                     {project.location}
                   </p>
                 </div>
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            viewport={{ once: true }}
-            className="mt-10 md:mt-16 text-center"
-          >
-            <Link
-              to="/projects"
-              className="inline-flex items-center gap-3 px-7 py-3.5 md:px-10 md:py-4 border-2 border-darker text-darker font-sans text-[14px] font-semibold tracking-[0.05em] uppercase transition-all duration-300 ease-smooth hover:bg-darker hover:text-cream"
-            >
-              View All Projects
-              <ArrowRight size={18} />
-            </Link>
-          </motion.div>
         </div>
       </section>
 
@@ -265,7 +359,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop"
+                  src="./images/pages/Man-O-Set.png"
                   alt="Natural rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
@@ -295,7 +389,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop"
+                  src="./images/products/Kolot-Set-Wide.png"
                   alt="Synthetic rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
@@ -368,7 +462,7 @@ export default function Home() {
             >
               <div className="relative pt-[80%] md:pt-[125%] overflow-hidden">
                 <img
-                  src="/images/Master-Craftmanship.png"
+                  src="/images/pages/Master-Craftmanship.png"
                   alt="Skilled artisan weaving rattan furniture by hand"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-[86.8%] object-cover"

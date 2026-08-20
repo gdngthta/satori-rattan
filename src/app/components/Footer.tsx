@@ -8,12 +8,6 @@ const footerLinks = {
     { label: 'Sustainability', path: '/about' },
     { label: 'Certifications', path: '/about' },
   ],
-  services: [
-    { label: 'Bespoke Design', path: '/bespoke' },
-    { label: 'Contract Manufacturing', path: '/projects' },
-    { label: 'Product Development', path: '/bespoke' },
-    { label: 'Quality Assurance', path: '/craftsmanship' },
-  ],
 };
 
 const services = [

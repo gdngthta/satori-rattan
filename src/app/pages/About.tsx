@@ -70,7 +70,7 @@ export default function About() {
       <section className="relative h-[60vh] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Hero-About.png"
+            src="/images/pages/about/Hero-About.webp"
             alt="Satori Rattan headquarters and manufacturing facility in Cirebon, Indonesia"
             className="w-full h-full object-cover"
           />
@@ -154,7 +154,7 @@ export default function About() {
               className="relative pt-[75%] md:pt-[125%] overflow-hidden"
             >
               <img
-                src="./images/pages/Abstract-Legacy-Nobg.png"
+                src="./images/pages/about/Abstract-Legacy-Nobg.png"
                 alt="Historical photo of Satori Rattan workshop showcasing traditional craftsmanship heritage"
                 loading="lazy"
                 className="absolute top-0 left-0 w-full h-full object-cover"
@@ -221,7 +221,7 @@ export default function About() {
               className="relative pt-[70%] md:pt-[100%] overflow-hidden order-2 md:order-1"
             >
               <img
-                src="./images/pages/Abstract-Global.png"
+                src="./images/pages/about/Abstract-Global.png"
                 alt="World map showing Satori Rattan's global distribution network"
                 loading="lazy"
                 className="absolute top-0 left-0 w-full h-full object-cover"

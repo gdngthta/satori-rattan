@@ -22,17 +22,17 @@ const constructionDetails = [
   {
     title: 'Frame Engineering',
     description: 'Powder-coated aluminum or sustainably sourced hardwood frames engineered for maximum strength-to-weight ratio and long-term stability.',
-    image: 'https://images.unsplash.com/photo-1581092918484-8313e1f7e8c6?w=600&h=500&fit=crop',
+    image: './images/pages/craftsmanship/Frame-Engineering.png',
   },
   {
     title: 'Weaving Techniques',
     description: 'Traditional hand-weaving methods passed down through generations, ensuring tight, consistent patterns that maximize durability and aesthetic appeal.',
-    image: 'https://images.unsplash.com/photo-1565183928294-7d22f90a72d6?w=600&h=500&fit=crop',
+    image: './images/pages/craftsmanship/Weaving.png',
   },
   {
     title: 'Joinery & Finishing',
     description: 'Precision joinery techniques combined with multi-stage finishing processes create seamless connections and protective coatings that enhance longevity.',
-    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=500&fit=crop',
+    image: './images/pages/craftsmanship/Bending-Joinery.png',
   },
 ];
 
@@ -87,7 +87,7 @@ export default function Craftsmanship() {
       <section className="relative h-[60vh] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Hero-Craftmanship.png"
+            src="/images/pages/craftsmanship/Hero-Craftmanship.webp"
             alt="Master artisan weaving natural rattan furniture"
             className="w-full h-full object-cover"
           />
@@ -190,7 +190,7 @@ export default function Craftsmanship() {
               className="relative pt-[75%] md:pt-[125%] overflow-hidden"
             >
               <img
-                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=1000&fit=crop"
+                src="./images/pages/craftsmanship/Art-Of-Weaving.png"
                 alt="Close-up of skilled artisan hands weaving intricate rattan pattern"
                 loading="lazy"
                 className="absolute top-0 left-0 w-full h-full object-cover"
@@ -203,7 +203,7 @@ export default function Craftsmanship() {
               transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               viewport={{ once: true, margin: '-100px' }}
             >
-              <div className={eyebrowWarm}>Traditional Techniques</div>
+              <div className={eyebrowWarm}>Woven By Hand</div>
               <h2 className="font-serif text-[28px] md:text-[clamp(36px,5vw,56px)] font-semibold text-darker leading-[1.2] mb-6">
                 The Art of Weaving
               </h2>

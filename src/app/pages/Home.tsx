@@ -1,11 +1,7 @@
 import { motion } from 'motion/react';
-import { ArrowRight, Check, Quote, Maximize2, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
+import { ArrowRight, Check, Quote, ExternalLink, Hotel, Home as HomeIcon, Building2, Store } from 'lucide-react';
 import { Link } from 'react-router';
 import { fadeUp } from '../lib/animations';
-
-// Link with motion animation support (so featured cards can fade in AND route
-// internally to the Collections page instead of opening external sites).
-const MotionLink = motion.create(Link);
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  COPYWRITING lives in these arrays. Edit text inside the quotes; keep names.
@@ -20,7 +16,7 @@ const credentials = [
 const stats = [
   { value: '12+', label: 'Years Experience' },
   { value: '40+', label: 'Countries Served' },
-  { value: '98%', label: 'Client Retention' },
+  { value: 'Bespoke', label: 'Made to Specification' },
 ];
 
 const processSteps = [
@@ -60,34 +56,30 @@ const featuredProjects = [
   {
     name: 'Terrace',
     location: 'Manao rattan skin off with leather binded.',
-    image: '/images/products/Terrace-Indoor-Chair.webp',
+    image: '/images/products/terrace/Terrace-Indoor-Chair.webp',
     category: 'Lounge',
-    collection: 'natural', // which tab on the Collections page this lives in
-    product: 'Terrace',    // must match the product `name` in Collections.tsx exactly
+    link: 'https://urbanquarter.com/indonesian/memilih-furniture-untuk-menciptakan-rumah-yang-nyaman-dari-toko-furnitur-jakarta-selatan/',
   },
   {
     name: 'Kolot Lounge Chair',
     location: 'Carbon steel powder coated / Polyethylene weave',
-    image: '/images/products/Kolot-Out-Lounge-Chair.webp',
+    image: '/images/products/kolot/Kolot-Out-Lounge-Chair.webp',
     category: 'Dining',
-    collection: 'synthetic',
-    product: 'Kolot',
+    link: 'https://www.berkeleygroup.co.uk/',
   },
   {
     name: 'Man O',
     location: 'Carbon steel powder coated / Rattan core weave.',
-    image: '/images/products/Man-O-Chair.webp',
+    image: '/images/products/man-o/Man-O-Chair.webp',
     category: 'Lounge',
-    collection: 'natural',
-    product: 'Man O',
+    link: 'https://www.scorpiosmusic.com/',
   },
   {
     name: 'Elena',
     location: 'Black Rattan',
-    image: '/images/products/Elena-Front.webp',
+    image: './images/products/elena/Elena-Front.webp',
     category: 'Lounge',
-    collection: 'natural',
-    product: 'Elena',
+    link: 'https://www.unlisted-collection.com/',
   },
 ];
 
@@ -113,7 +105,7 @@ const placeholderLogo = (label: string) =>
 //   name = the brand name (also used as the image's alt text for accessibility).
 //   logo = a real file path OR a placeholder box.
 //   For a REAL logo: put the file in public/images/brands/ and point to it,
-//   e.g. logo: '/images/brands/muji.webp'  (SVG/WebP/PNG all work).
+//   e.g. logo: '/images/brands/muji.webp'  (SVG/WebP/webp all work).
 // Add or remove lines to change how many show.
 const clients = [
   { name: 'Muji',        logo: '/images/brands/muji.webp' },   // ← real logo
@@ -134,7 +126,7 @@ export default function Home() {
       <section className="relative h-[70vh] md:h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/pages/Man-O-Hero.png"
+            src="/images/pages/home/Man-O-Hero.webp"
             alt="Luxurious rattan lounge chairs in tropical resort setting"
             className="w-full h-full object-cover"
           />
@@ -216,11 +208,10 @@ export default function Home() {
           >
             <div className={eyebrow}>Our Markets</div>
             <h2 className="font-serif text-[36px] md:text-[clamp(36px,5vw,64px)] font-semibold text-darker leading-[1.2] mb-4">
-              Industries We Serve
+              Built for Every Setting
             </h2>
             <p className="font-sans text-[15px] md:text-[18px] text-muted max-w-[640px] mx-auto leading-[1.6]">
-              From five-star hospitality to large-scale residential developments, we partner with brands across every corner of the furniture market.
-            </p>
+              From hospitality destinations to residential developments, we collaborate with businesses and design professionals across diverse project environments.            </p>
           </motion.div>
 
           <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-4">
@@ -256,7 +247,7 @@ export default function Home() {
           className="max-w-[1440px] mx-auto text-center"
         >
           <div className="font-sans text-[13px] font-semibold tracking-[0.15em] uppercase text-warm mb-8">
-            Who We Serve
+            BRANDS WE’VE WORKED WITH
           </div>
           <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 md:gap-x-16">
             {clients.map((client, i) => (
@@ -289,11 +280,11 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
             {featuredProjects.map((project, i) => (
-              <MotionLink
+              <motion.a
                 key={i}
-                // Deep-link into Collections: opens the right tab AND auto-opens
-                // this product's quick-view gallery (see Collections.tsx).
-                to={`/collections?collection=${project.collection}&product=${encodeURIComponent(project.product)}`}
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
@@ -309,7 +300,7 @@ export default function Home() {
                   />
                   {/* Small icon that fades in when the card is hovered */}
                   <div className="absolute top-3 right-3 w-8 h-8 bg-[rgba(254,253,251,0.95)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-smooth">
-                    <Maximize2 size={14} className="text-darker" />
+                    <ExternalLink size={14} className="text-darker" />
                   </div>
                 </div>
                 <div className="py-3 md:py-6">
@@ -324,7 +315,7 @@ export default function Home() {
                     {project.location}
                   </p>
                 </div>
-              </MotionLink>
+              </motion.a>
             ))}
           </div>
 
@@ -359,7 +350,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="./images/pages/Man-O-Set.png"
+                  src="./images/pages/home/Man-O-Set.webp"
                   alt="Natural rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
@@ -389,7 +380,7 @@ export default function Home() {
             >
               <div className="relative pt-[75%] overflow-hidden mb-6">
                 <img
-                  src="./images/products/Kolot-Set-Wide.png"
+                  src="./images/products/kolot/Kolot-Set-Wide.webp"
                   alt="Synthetic rattan furniture collection"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-[600ms] ease-smooth hover:scale-105"
@@ -462,7 +453,7 @@ export default function Home() {
             >
               <div className="relative pt-[80%] md:pt-[125%] overflow-hidden">
                 <img
-                  src="/images/pages/Master-Craftmanship.png"
+                  src="/images/pages/home/Master-Craftmanship.webp"
                   alt="Skilled artisan weaving rattan furniture by hand"
                   loading="lazy"
                   className="absolute top-0 left-0 w-full h-[86.8%] object-cover"
@@ -517,7 +508,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+          <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-3">
             {processSteps.map((step, i) => (
               <motion.div
                 key={i}

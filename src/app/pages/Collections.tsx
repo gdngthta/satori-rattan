@@ -36,72 +36,72 @@ type Product = {
 const naturalProducts: Product[] = [
   {
     name: 'Terrace',
-    image: './images/products/Terrace-Indoor-Chair-Square.webp',
+    image: './images/products/terrace/Terrace-Indoor-Chair-Square.webp',
     // STYLE A — one-line tagline only.
     tagline: 'The quiet centre of a sunlit room.',
     gallery: [
-      './images/products/Terrace-Indoor-Chair-Square.webp',
-      './images/products/Terrace-Indoor-Chair-Front-Square.webp',
-      './images/products/Terrace-Indoor-Chair-Side-Square.webp'
+      './images/products/terrace/Terrace-Indoor-Chair-Square.webp',
+      './images/products/terrace/Terrace-Indoor-Chair-Front-Square.webp',
+      './images/products/terrace/Terrace-Indoor-Chair-Side-Square.webp'
     ],
     // ⬇️ DEMO color options (stand-in photos so you can see it work).
     //    Replace each `image` with your REAL color-variant photo, and set the
     //    `swatch` hex + `name` to match. Delete this whole `colors` block for
     //    products that only come in one color.
     // colors: [
-    //   { name: 'Warm Brown',  swatch: '#3A332A', image: './images/products/Canari-Chair-DarkBrown.webp' },
-    //   { name: 'Natural', swatch: '#C9A77E', image: './images/products/Canari-Chair-Natural.webp' },
-    //   { name: 'Sand',     swatch: '#e6ddd1', image: './images/products/Canari-Chair-Sand.webp' },
+    //   { name: 'Warm Brown',  swatch: '#3A332A', image: './images/products/canari/Canari-Chair-DarkBrown.webp' },
+    //   { name: 'Natural', swatch: '#C9A77E', image: './images/products/canari/Canari-Chair-Natural.webp' },
+    //   { name: 'Sand',     swatch: '#e6ddd1', image: './images/products/canari/Canari-Chair-Sand.webp' },
     // ],
   },
   {
     name: 'H Low',
-    image: './images/products/H-Low-Chair-Jati-Front-Further.webp',
+    image: './images/products/h-low/H-Low-Chair-Jati-Front-Further.webp',
     // STYLE B — short paragraph only (no tagline).
     narration: 'Low to the ground and impossibly easy — hand-woven rattan peel draped over a solid frame, a chair that asks nothing of you but a long, unhurried afternoon.',
     // DEMO angle photos (stand-ins). Replace with your real angle shots, ideally
     // in public/images/products/ (e.g. '/images/products/java-front.jpg').
     gallery: [
-      './images/products/H-Low-Chair-Jati-Front.webp',
-      './images/products/H-Low-Chair-Jati.webp',
-      './images/products/H-Low-Chair-Mahoni-Front.webp',
-      './images/products/H-Low-Chair-Mahoni.webp',
+      './images/products/h-low/H-Low-Chair-Jati-Front.webp',
+      './images/products/h-low/H-Low-Chair-Jati.webp',
+      './images/products/h-low/H-Low-Chair-Mahoni-Front.webp',
+      './images/products/h-low/H-Low-Chair-Mahoni.webp',
     ],
   },
   {
     name: 'Elena',
-    image: './images/products/Elena-Chair-ZoomOut.webp', // portrait crop now that this is a normal (tall) card
+    image: './images/products/elena/Elena-Chair-ZoomOut.webp', // portrait crop now that this is a normal (tall) card
     // STYLE C — tagline + one supporting sentence.
     tagline: 'Sculpture you can sit in.',
     narration: 'Curved rattan and teak resolved into a single fluid line — poised, and quietly sociable.',
     gallery: [
-      './images/products/Elena-Chair-Square.webp',
-      './images/products/Elena-Front-Square.webp',
+      './images/products/elena/Elena-Chair-Square.webp',
+      './images/products/elena/Elena-Front-Square.webp',
     ]
   },
   {
     name: 'Mild',
-    image: './images/products/Mild-Chair-Square.webp',
+    image: './images/products/mild/Mild-Chair-Square.webp',
     // STYLE A — one-line tagline only.
     tagline: 'Softness, given a spine.',
     gallery: [
-      './images/products/Mild-Chair-Square.webp',
-      './images/products/Mild-Chair-Front-Square.webp',
+      './images/products/mild/Mild-Chair-Square.webp',
+      './images/products/mild/Mild-Chair-Front-Square.webp',
     ]
   },
   {
     // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
     name: 'Man O',
-    image: './images/products/Man-O-Set.webp', // ← LANDSCAPE shot for the wide card
+    image: './images/products/man-o/Man-O-Set.webp', // ← LANDSCAPE shot for the wide card
     // STYLE C — tagline + one supporting sentence (wide set).
     tagline: 'The room, gathered.',
     narration: 'A three-seater, two armchairs and a low table in solid teak and rattan — a whole conversation, arranged.',
     wide: true, // ← wide landscape card in its own row
     gallery: [
-      './images/products/Man-O-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
-      './images/products/Man-O-Sofa.webp',  // sofa close-up
-      './images/products/Man-O-Chair-Square.webp',      // armchair close-up
-      './images/products/Man-O-Table-Square.webp', // coffee table close-up
+      './images/products/man-o/Man-O-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/man-o/Man-O-Sofa.webp',  // sofa close-up
+      './images/products/man-o/Man-O-Chair-Square.webp',      // armchair close-up
+      './images/products/man-o/Man-O-Table-Square.webp', // coffee table close-up
     ],
   },
 ];
@@ -109,16 +109,16 @@ const naturalProducts: Product[] = [
 const syntheticProducts: Product[] = [
   {
     name: 'Kolot',
-    image: './images/products/Kolot-Set.webp', // landscape crop for the wide card
+    image: './images/products/kolot/Kolot-Set.webp', // landscape crop for the wide card
     // STYLE B — short paragraph only (wide set).
     narration: 'Built for salt air and long seasons — UV-stable weave over a weatherproof frame, arranged as a full lounge set that brings the ease of the indoors out onto the terrace and never asks to come back in.',
     wide: true, // ← now wide, so Synthetic has 2 wides (Kolot + Gading Set) in its own row
     gallery: [
-      './images/products/Kolot-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
-      './images/products/Kolot-Out-Sofa.webp',  // sofa close-up
-      './images/products/Kolot-Out-Single-Chair-Square.webp',      // armchair close-up
-      './images/products/Kolot-Out-Table-Square.webp', // coffee table close-up
-      './images/products/Kolot-Out-Lounge-Chair-Square.webp', // coffee table close-up
+      './images/products/kolot/Kolot-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/kolot/Kolot-Out-Sofa.webp',  // sofa close-up
+      './images/products/kolot/Kolot-Out-Single-Chair-Square.webp',      // armchair close-up
+      './images/products/kolot/Kolot-Out-Table-Square.webp', // coffee table close-up
+      './images/products/kolot/Kolot-Out-Lounge-Chair-Square.webp', // coffee table close-up
     ]
   },
   {
@@ -130,38 +130,38 @@ const syntheticProducts: Product[] = [
   },
   {
     name: 'Terrace',
-    image: './images/products/Terrace-Out-Square.webp',
+    image: './images/products/terrace/Terrace-Out-Square.webp',
     // STYLE A — one-line tagline only.
     tagline: 'Made for the open air, unbothered.',
     gallery: [
-      './images/products/Terrace-Out-Square.webp',
-      './images/products/Terrace-Out-Front-Square.webp',
-      './images/products/Terrace-Out-Side-Square.webp',
+      './images/products/terrace/Terrace-Out-Square.webp',
+      './images/products/terrace/Terrace-Out-Front-Square.webp',
+      './images/products/terrace/Terrace-Out-Side-Square.webp',
     ]
   },
   {
     name: 'Canari',
-    image: './images/products/Canari-Chair-Out-Square.webp',
+    image: './images/products/canari/Canari-Chair-Out-Square.webp',
     // STYLE B — short paragraph only.
     narration: 'The warmth of hand-woven rattan with none of its worries — marine-grade fibre that holds its colour and its shape through every season on the deck.',
     gallery: [
-      './images/products/Canari-Chair-Out-Square.webp',
-      './images/products/Canari-Chair-Out-Front-Square.webp',
+      './images/products/canari/Canari-Chair-Out-Square.webp',
+      './images/products/canari/Canari-Chair-Out-Front-Square.webp',
     ]
   },
   {
     // DEMO wide SET: renders as a landscape card in the 2-up "Sets" row below.
     name: 'Gading Set',
-    image: './images/products/Gading-Set.webp', // ← LANDSCAPE shot for the wide card
+    image: './images/products/gading/Gading-Set.webp', // ← LANDSCAPE shot for the wide card
     // STYLE C — tagline + one supporting sentence (wide set).
     tagline: 'Outdoor living, fully composed.',
     narration: 'Sofa, armchairs and a low table in all-weather rattan — a set that turns any courtyard into a room.',
     wide: true, // ← wide landscape card in its own row
     gallery: [
-      './images/products/Gading-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
-      './images/products/Gading-Sofa.webp',  // sofa close-up
-      './images/products/Gading-Chair-Square.webp',      // armchair close-up
-      './images/products/Gading-Table-Square.webp', // coffee table close-up
+      './images/products/gading/Gading-Set.webp', // ← WIDE full-set shot (shows complete in the modal)
+      './images/products/gading/Gading-Sofa.webp',  // sofa close-up
+      './images/products/gading/Gading-Chair-Square.webp',      // armchair close-up
+      './images/products/gading/Gading-Table-Square.webp', // coffee table close-up
     ],
   },
 ];

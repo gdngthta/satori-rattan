@@ -32,9 +32,9 @@ credibility and capture inquiries that the sales team follows up by email.
 
 ## 4. Stakeholders
 - **Business owner / sales** — receives leads, owns content and brand claims.
-- **Content editor** (likely the owner) — updates products, images, copy.
-- **Developer** — maintains code, deploys.
-- **End users** — B2B buyers, interior designers, procurement teams.
+- **Content editor** (Gading) — updates products, images, copy.
+- **Developer** (Gading) — maintains code, deploys.
+- **End users** — buyers, interior designers, procurement teams.
 
 ## 5. Scope
 ### In scope

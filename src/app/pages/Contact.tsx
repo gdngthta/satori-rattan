@@ -6,8 +6,7 @@ import { fadeUp } from '../lib/animations';
 
 // COPYWRITING: the two headline stats shown in the dark bar.
 const contactStats = [
-  { value: '3 Business Day', label: 'Response Time' },
-  { value: '98%', label: 'Client Satisfaction' },
+  { value: '3 Business Days', label: 'Quotation Response' },
 ];
 
 // Shared field styles. Written once, used by every input/select/textarea.
@@ -141,7 +140,7 @@ export default function Contact() {
       {/* ── Stats Bar ── */}
       <section className="bg-darker text-cream px-6 py-10 md:px-12 md:py-16">
         <div className="max-w-[1440px] mx-auto">
-          <div className="grid grid-cols-2 gap-6 md:gap-12">
+          <div className="grid grid-cols-1 gap-6 md:gap-12">
             {contactStats.map((stat, i) => (
               <motion.div
                 key={i}
@@ -211,7 +210,7 @@ export default function Contact() {
                     Request for Quotation
                   </h2>
                   <p className="font-sans text-[14px] text-muted mb-8 leading-[1.6]">
-                    Complete the form below and our team will respond within 3 business day with a detailed quotation
+                    Complete the form below and our team will respond within 3 business days with a detailed quotation
                   </p>
 
                   {error && (
@@ -309,7 +308,7 @@ export default function Contact() {
                     Thank You!
                   </h2>
                   <p className="font-sans text-[14px] md:text-[16px] text-muted leading-[1.8] mb-8">
-                    Your inquiry has been received successfully. Our sales team will review your requirements and respond within 3 business day with a detailed quotation.
+                    Your inquiry has been received successfully. Our sales team will review your requirements and respond within 3 business days with a detailed quotation.
                   </p>
                   <p className="font-sans text-[14px] text-muted italic">
                     Reference: RFQ-{Date.now().toString().slice(-6)}

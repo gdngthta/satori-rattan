@@ -533,13 +533,19 @@ function CollectionHeader({ number, title, subtitle }: { number: string; title: 
 // Soft gate: a short form that emails us the request (reuses the same EmailJS
 // setup as the Contact page). Catalog stays visible; this just captures leads.
 function CatalogRequest() {
-  const [form, setForm] = useState({ name: '', company: '', email: '', interest: '' });
+  const [form, setForm] = useState({ name: '', company: '', email: '', interest: '', website: '' });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot: `website` is hidden from people; if filled, it's a bot — fake
+    // success and send nothing.
+    if (form.website) {
+      setSubmitted(true);
+      return;
+    }
     setLoading(true);
     setError('');
     const submissionTime = new Date().toLocaleString('en-US', {
@@ -598,6 +604,17 @@ function CatalogRequest() {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:gap-4 text-left">
+        {/* Honeypot — hidden from humans; only bots fill it (see handleSubmit). */}
+        <input
+          type="text"
+          name="website"
+          value={form.website}
+          onChange={(e) => setForm({ ...form, website: e.target.value })}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="hidden"
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div>
             <label htmlFor="cat_name" className="sr-only">Your Name</label>

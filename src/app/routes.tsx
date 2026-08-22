@@ -6,6 +6,7 @@ import Bespoke from './pages/Bespoke';
 import Craftsmanship from './pages/Craftsmanship';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'craftsmanship', element: <Craftsmanship /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },
+      { path: '*', element: <NotFound /> }, // catch-all: any unknown URL → 404 page
     ],
   },
 ]);

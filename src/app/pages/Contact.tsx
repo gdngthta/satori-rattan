@@ -27,6 +27,7 @@ export default function Contact() {
     quantity: '',
     budget: '',
     message: '',
+    website: '', // honeypot — hidden from humans; only bots fill it (see handleSubmit)
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,12 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot: a real person can't see/fill `website`. If it's filled, it's a
+    // bot — pretend it succeeded (so the bot moves on) but send nothing.
+    if (formData.website) {
+      setSubmitted(true);
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -50,7 +57,7 @@ export default function Contact() {
     try {
       emailjs.init('pW1vDoZIFag3A6sY3');
 
-      const result = await emailjs.send(
+      await emailjs.send(
         'service_athfx8e',
         'template_rz0s4di',
         {
@@ -66,10 +73,8 @@ export default function Contact() {
         }
       );
 
-      console.log('Email sent successfully!', result);
       setSubmitted(true);
     } catch (err: any) {
-      console.error('Detailed error:', err);
       setError(`Failed to send message: ${err.text || err.message || 'Please try again'}`);
     } finally {
       setLoading(false);
@@ -221,6 +226,20 @@ export default function Contact() {
                   )}
 
                   <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-6">
+
+                    {/* Honeypot: hidden from people (hidden + aria-hidden + off-screen),
+                        so only bots fill it. tabIndex/autoComplete off so keyboards
+                        and password managers skip it too. */}
+                    <input
+                      type="text"
+                      name="website"
+                      value={formData.website}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="hidden"
+                    />
 
                     {/* Company + Contact Name */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
